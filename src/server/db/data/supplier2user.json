@@ -1,0 +1,10 @@
+[
+  {
+    "userId": "john.doe@ncc.com",
+    "supplierId": "hard001"
+  },
+  {
+    "userId": "scott.tiger@example.com",
+    "supplierId": "hwi"
+  }
+]

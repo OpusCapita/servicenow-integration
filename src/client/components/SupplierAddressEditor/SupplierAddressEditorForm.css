@@ -1,0 +1,14 @@
+.object-info {
+  border-top: 1px solid #eee;
+  margin-top: 15px;
+  padding-top: 15px;
+}
+
+.address-info-sign {
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.address-form-submit {
+  padding-right: 0px;
+}

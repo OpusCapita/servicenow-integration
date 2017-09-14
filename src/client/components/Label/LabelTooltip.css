@@ -1,0 +1,7 @@
+#tooltipPopover .popover-content {
+  white-space: pre-wrap;
+}
+
+.popover {
+  max-width: 315px;
+}

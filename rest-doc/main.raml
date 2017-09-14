@@ -1,0 +1,14 @@
+#%RAML 1.0
+title: Supplier Service (supplier)
+description: Service providing access to supplier related data.
+version: 1.0.0
+baseUri: http://localhost
+mediaType:
+  - application/json
+protocols:
+  - http
+  - https
+
+types: !include schemas/index.raml
+
+/suppliers: !include resourceTypes/supplier.raml

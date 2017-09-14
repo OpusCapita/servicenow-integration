@@ -1,0 +1,14 @@
+.object-info {
+  border-top: 1px solid #eee;
+  margin-top: 12px;
+  padding-top: 15px;
+}
+
+.contact-info-sign {
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.contact-form-submit {
+  padding-right: 0px;
+}

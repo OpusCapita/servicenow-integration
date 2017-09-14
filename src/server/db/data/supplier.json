@@ -1,0 +1,50 @@
+[
+  {
+    "supplierId": "hard001",
+    "supplierName": "Hardware AG",
+    "cityOfRegistration": "Minsk",
+    "countryOfRegistration": "DE",
+    "role": "selling",
+    "foundedOn": "2015-10-04 22:00:00",
+    "globalLocationNo": "123",
+    "homePage": "http://hard.ware.ag",
+    "legalForm": "KG",
+    "registrationNumber": "MI651355",
+    "status": "new",
+    "createdBy": "john.doe@ncc.com",
+    "changedBy": "john.doe@ncc.com"
+  },
+  {
+    "supplierId": "car001",
+    "supplierName": "automobile.de",
+    "cityOfRegistration": "Minsk",
+    "countryOfRegistration": "DE",
+    "role": "buying",
+    "foundedOn": "2017-08-15 07:20:14",
+    "globalLocationNo": "123",
+    "homePage": "automobile.de",
+    "legalForm": "KG",
+    "registrationNumber": "MI3464564356",
+    "status": "new",
+    "createdBy": "john.doe@ncc.com",
+    "changedBy": "john.doe@ncc.com"
+  },
+  {
+    "supplierId": "hwi",
+    "supplierName": "Hardware Inc.",
+    "cityOfRegistration": "Los Angeles",
+    "countryOfRegistration": "US",
+    "role": "selling",
+    "createdBy": "scott.tiger@example.com",
+    "changedBy": "scott.tiger@example.com"
+  },
+  {
+    "supplierId": "ncc",
+    "supplierName": "NCC Svenska AB",
+    "cityOfRegistration": "Stockholm",
+    "countryOfRegistration": "SE",
+    "role": "buying",
+    "createdBy": "john.doe@ncc.com",
+    "changedBy": "john.doe@ncc.com"
+  }
+]

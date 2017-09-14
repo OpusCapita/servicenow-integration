@@ -1,0 +1,14 @@
+{
+  "bankAccountId": "ba_hard001",
+  "bankIdentificationCode": "DEDSLTJXXXX",
+  "accountNumber": "DE89370400440532013000",
+  "swiftCode": "DEDSLTJXXXX",
+  "bankName": "Deutsche Bank",
+  "bankCode": "423",
+  "extBankControlKey": "35",
+  "bankCountryKey": "DE",
+  "supplierId": "hard001",
+  "createdOn": "2017-06-16 08:10:42",
+  "createdBy": "john.doe@ncc.com",
+  "changedBy": "john.doe@ncc.com"
+}

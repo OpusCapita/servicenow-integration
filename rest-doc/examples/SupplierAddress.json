@@ -1,0 +1,23 @@
+{
+  "addressId":"central_office",
+  "supplierId":"hard001",
+  "salutation":"Supplier",
+  "name1":"Central Office",
+  "name2":null,
+  "name3":null,
+  "areaCode":null,
+  "street":"BV Borussia 09 e.V.",
+  "state":null,
+  "pobox":null,
+  "poboxZipCode":null,
+  "email":"jana.pape@jcatalog.com",
+  "zipCode":"220100",
+  "city":"Dortmund",
+  "phoneNo":"+491234512345",
+  "faxNo":null,
+  "countryId":"DE",
+  "changedBy":"jcadmin",
+  "createdBy":"jcadmin",
+  "createdOn":"2016-01-29T00:02:03.000Z",
+  "changedOn":"2016-02-22T05:30:56.000Z"
+}

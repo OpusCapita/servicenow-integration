@@ -1,0 +1,8 @@
+version: '3'
+services:
+  main:
+    build: .
+    volumes:
+      - .:/home/node/supplier
+      - /home/node/supplier/node_modules
+    command: 'npm run local'

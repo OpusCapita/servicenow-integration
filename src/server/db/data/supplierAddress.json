@@ -1,0 +1,24 @@
+[
+  {
+    "addressId": "central_office",
+    "supplierId": "hard001",
+    "areaCode": null,
+    "city": "Minsk",
+    "countryId": "BY",
+    "email": "jana.pape@jcatalog.com",
+    "faxNo": null,
+    "name1": "Central Office",
+    "name2": null,
+    "name3": null,
+    "phoneNo": "+491234512345",
+    "pobox": null,
+    "poboxZipCode": null,
+    "salutation": "Supplier",
+    "state": null,
+    "street": "Fabriciusa 8, B1",
+    "type": "default",
+    "zipCode": "220100",
+    "createdBy": "john.doe@ncc.com",
+    "changedBy": "john.doe@ncc.com"
+  }
+]

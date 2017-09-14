@@ -1,0 +1,52 @@
+type: object
+displayName: SupplierAddress
+description: Object representing all addresses assigned to a given supplier.
+properties:
+    id:
+        type: string
+    supplierId:
+        type: string
+    name:
+        type: string
+    areaCode:
+        type: string
+        required: false
+    street1:
+        type: string
+    street2:
+        type: string
+        required: false
+    street3:
+        type: string
+        required: false
+    state:
+        type: string
+        required: false
+    pobox:
+        type: string
+        required: false
+    poboxZipCode:
+        type: string
+        required: false
+    email:
+        type: string
+    zipCode:
+        type: string
+    city:
+        type: string
+    phoneNo:
+        type: string
+    faxNo:
+        type: string
+        required: false
+    countryId:
+        type: string
+    changedBy:
+        type: string
+    createdBy:
+        type: string
+    createdOn:
+        type: string
+    changedOn:
+        type: string
+example: !include ../examples/SupplierAddress.json
