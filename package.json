@@ -1,7 +1,7 @@
 {
-  "name": "supplier",
-  "version": "2.0.4-SNAPSHOT",
-  "description": "Supplier Microservice. Provides base CRUD Rest API for basic Supplier data manipulation.",
+  "name": "servicenow-integration",
+  "version": "1.0.0",
+  "description": "ServiceNow Microservice. Provides issue-creation functionality",
   "scripts": {
     "start": "node src/server/index.js",
     "dev": "npm run setup-consul ; nodemon --watch src/server src/server/index.js",
@@ -11,7 +11,7 @@
     "build:client": "cross-env NODE_ENV=production ; webpack -p --config ./webpack.production.config.js --profile --colors --bail",
     "test": "npm run clean ; npm run setup-consul ; nyc mocha -R mocha-junit-reporter src/**/*.test.js",
     "clean": "rimraf esdoc testdb.sqlite .nyc_output coverage test-results.xml",
-    "setup-consul": "curl -X PUT -d ${MYSQL_DATABASE} http://consul:8500/v1/kv/supplier/db-init/database ; curl -X PUT -d 'root' http://consul:8500/v1/kv/supplier/db-init/user ; curl -X PUT -d ${MYSQL_ROOT_PASSWORD} http://consul:8500/v1/kv/supplier/db-init/password ; curl -X PUT -d 'true' http://consul:8500/v1/kv/supplier/db-init/populate-test-data ; curl -X PUT -d ${REDIS_AUTH} http://consul:8500/v1/kv/supplier/redis/password;  curl -X PUT -d 'svc_supplier' http://consul:8500/v1/kv/supplier/service-client/username; curl -X PUT -d 'test' http://consul:8500/v1/kv/supplier/service-client/password; curl -X PUT -d 'oidcCLIENT' http://consul:8500/v1/kv/supplier/service-client/client-key; curl -X PUT -d '91c0fabd17a9db3cfe53f28a10728e39b7724e234ecd78dba1fb05b909fb4ed98c476afc50a634d52808ad3cb2ea744bc8c3b45b7149ec459b5c416a6e8db242' http://consul:8500/v1/kv/supplier/service-client/client-secret",
+    "setup-consul": "curl -X PUT -d ${MYSQL_DATABASE} http://consul:8500/v1/kv/servicenow-integration/db-init/database ; curl -X PUT -d 'root' http://consul:8500/v1/kv/servicenow-integration/db-init/user ; curl -X PUT -d ${MYSQL_ROOT_PASSWORD} http://consul:8500/v1/kv/servicenow-integration/db-init/password ; curl -X PUT -d 'true' http://consul:8500/v1/kv/servicenow-integration/db-init/populate-test-data ; curl -X PUT -d ${REDIS_AUTH} http://consul:8500/v1/kv/servicenow-integration/redis/password;  curl -X PUT -d 'svc_servicenow-integration' http://consul:8500/v1/kv/servicenow-integration/service-client/username; curl -X PUT -d 'test' http://consul:8500/v1/kv/servicenow-integration/service-client/password; curl -X PUT -d 'oidcCLIENT' http://consul:8500/v1/kv/servicenow-integration/service-client/client-key; curl -X PUT -d '91c0fabd17a9db3cfe53f28a10728e39b7724e234ecd78dba1fb05b909fb4ed98c476afc50a634d52808ad3cb2ea744bc8c3b45b7149ec459b5c416a6e8db242' http://consul:8500/v1/kv/servicenow-integration/service-client/client-secret",
     "lint": "eslint src",
     "esdoc": "rimraf esdoc && esdoc -c esdoc.json",
     "domain-doc": "mkdir -p wiki/domain-doc ; sq2md --path-bl=index.js -o file-per-src -p wiki/domain-doc --field-bl=createdAt,updatedAt --output-ext=.model.md src/server/db/models",
@@ -20,11 +20,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/OpusCapita/supplier"
+    "url": "https://github.com/OpusCapita/servicenow-integration"
   },
   "author": {
-    "name": "Andrei Mourzenkov",
-    "email": "andrei.mourzenkov@jcatalog.com"
+    "name": "Stefan Tübben",
+    "email": "stefan.tubben@opuscapita.com"
   },
   "license": "jCatalog",
   "readme": "README.md",

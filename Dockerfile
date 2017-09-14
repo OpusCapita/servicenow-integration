@@ -1,7 +1,7 @@
 FROM node:8-alpine
 MAINTAINER patrykkopycinski
 
-WORKDIR /home/node/supplier
+WORKDIR /home/node/servicenow-integration
 
 # Bundle app source by overwriting all WORKDIR content.
 COPY . tmp

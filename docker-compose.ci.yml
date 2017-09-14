@@ -1,5 +1,5 @@
 version: '3'
 services:
   main:
-    image: opuscapita/supplier:dev
+    image: opuscapita/servicenow-integration:dev
     command: 'npm run dev'

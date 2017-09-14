@@ -8,7 +8,7 @@ services:
       - isodata
       - nginx
     labels:
-      SERVICE_NAME: 'supplier'  # Service name used by Registrator for adding to Consul's service discovery registry.
+      SERVICE_NAME: 'servicenow-integration'  # Service name used by Registrator for adding to Consul's service discovery registry.
       SERVICE_TAGS: 'external,kong'
     environment:
       SERVICE_3001_CHECK_HTTP: /api/health/check

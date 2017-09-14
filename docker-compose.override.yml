@@ -3,6 +3,6 @@ services:
   main:
     build: .
     volumes:
-      - .:/home/node/supplier
-      - /home/node/supplier/node_modules
+      - .:/home/node/servicenow-integration
+      - /home/node/servicenow-integration/node_modules
     command: 'npm run local'
