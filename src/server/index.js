@@ -4,13 +4,18 @@ const Logger = require('ocbesbn-logger'); // Logger
 const server = require('ocbesbn-web-init'); // Web server
 const db = require('ocbesbn-db-init'); // Database
 
+const bouncer = require('ocbesbn-bouncer');
+
 const logger = new Logger({
     context: {
-        serviceName: '{{your-service-name}}'
+        serviceName: 'servicenow-integration'
     }
 });
 
 logger.redirectConsoleOut(); // Force anyone using console outputs into Logger format.
+
+// TODO: bouncer middleware
+
 
 // Basic database and web server initialization.
 // See database : https://github.com/OpusCapitaBusinessNetwork/db-init
@@ -28,15 +33,21 @@ db.init({
     .then((db) => server.init({
         server: {
             mode: server.Server.Mode.Dev,
-            events : {
-                onStart : () => logger.info('Server ready. Allons-y!')
+            events: {
+                onStart: () => logger.info('Server ready. Allons-y!')
+            },
+            middlewares : [bouncer({
+                host : 'consul',
+                serviceName : 'servicenow-integration',
+                acl : require('./acl.json'), // TODO: ??!
+                aclServiceName : 'acl'
+            }).Middleware]
+        },
+        routes: {
+            dbInstance: db
         }
-    },
-    routes: {
-        dbInstance: db
-        }
-}))
-.catch((e) => {
-    server.end();
-throw e;
-});
+    }))
+    .catch((e) => {
+        server.end();
+        throw e;
+    });
