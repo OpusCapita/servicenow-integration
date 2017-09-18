@@ -1,5 +1,5 @@
 {
-  "name": "ocbesbn-servicenow-integration",
+  "name": "opsucapita-servicenow-integration",
   "version": "1.0.0",
   "description": "servicenow service to create issues via SOAP-API",
   "author": "Stefan Tübben",
@@ -22,6 +22,7 @@
     "ocbesbn-logger": "^1.0.2",
     "ocbesbn-redis-events": "^1.0.4",
     "ocbesbn-web-init": "^2.1.2",
+    "ocbesbn-bouncer": "^0.2.11",
     "sequelize": "^4.0.0",
     "soap": "^0.21.0"
   },
