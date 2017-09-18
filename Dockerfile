@@ -2,15 +2,9 @@ FROM node:8-alpine
 MAINTAINER stefantuebben
 
 # NOTE: "node" user and corresponding "/home/node" dir are created by "node:6-alpine" image.
-WORKDIR /home/node/supplier
-
-COPY . tmp
-
-RUN npm set progress=false && npm install ; npm cache clean
 
 WORKDIR /home/node/servicenow-integration
 
-# Bundle app source by overwriting all WORKDIR content.
 COPY . tmp
 
 # Change owner since COPY/ADD assignes UID/GID 0 to all copied content.

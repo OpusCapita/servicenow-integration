@@ -3,7 +3,7 @@ MAINTAINER stefantuebben
 
 # Set the working directory for any RUN, CMD, ENTRYPOINT, COPY and ADD instructions that follow.
 # If the directory does not exists, it will be created automatically.
-WORKDIR /var/tmp/base
+WORKDIR /home/node/servicenow-integration
 
 COPY package.json .
 
