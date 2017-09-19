@@ -14,9 +14,6 @@ const logger = new Logger({
 
 logger.redirectConsoleOut(); // Force anyone using console outputs into Logger format.
 
-// TODO: bouncer middleware
-
-
 // Basic database and web server initialization.
 // See database : https://github.com/OpusCapitaBusinessNetwork/db-init
 // See web server: https://github.com/OpusCapitaBusinessNetwork/web-init
