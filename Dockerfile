@@ -3,6 +3,8 @@ MAINTAINER stefantuebben
 
 # NOTE: "node" user and corresponding "/home/node" dir are created by "node:6-alpine" image.
 
+ENV NODE_PATH=/home/node/servicenow-integration/node_modules
+
 WORKDIR /home/node/servicenow-integration
 
 COPY . tmp

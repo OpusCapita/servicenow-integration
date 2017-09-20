@@ -1,52 +1,39 @@
 const RedisEvents = require('ocbesbn-redis-events');    // what is this?
 const soap = require('soap');
-
-module.exports =  function(app, db, config){
+const config = require('ocbesbn-config');
+const Logger = require('ocbesbn-logger'); // Logger
+const log = new Logger({
+    context: {
+        serviceName: 'servicenow-integration'
+    }
+});
+module.exports = function (app, db, config) {
     app.post('/api/servicenow-integration/insert', (req, res) => createIssue(req, res));
 
 };
 
 let createIssue = function (req, res) {
-    const newIssue = buildIssue(req.body);
-    const url = './u_evm_inbound.wsdl';     // TODO: try url and fallback to file?
+    const url = './u_evm_inbound.wsdl';
     soap.createClient(url, function (err, client) {
         if (err) {
-            handleWSDLError(err);
+            log.error(err);
         } else {
-            client.setSecurity(new soap.BasicAuthSecurity('user', 'pw'));   // TODO: get credentials?
-            client.insert(newIssue, function (err, result) {
+            client.setSecurity(getSoapCredentials());
+            client.insert(req.body, function (err, result) {
                 if (err) {
-                    handleSOAPError(err);
+                    res.send(err);
                 } else {
-                    handleResponse(result);
+                    res.send(result)
                 }
             });
         }
     });
+};
 
-    function handleResponse(response) {
-        switch (response.status) {
-            case 'error':
-                console.log(response.error_message);
-                break;
-            case 'ignored':
-                console.log("insert was ignored");
-                break;
-            case 'inserted':
-                console.log("new issue-id: " + response.display_value);
-                break;
-            default:
-                console.log(response);
-        }
-        console.log("---");
-        console.log(response);
-    }
-
-    function handleWSDLError(err) {
-        console.log(err)
-    }
-
-    function handleSOAPError(err) {
-        console.log(err)
-    }
+let getSoapCredentials = function () {
+    let cred;
+    config.getProperty(['servicenow-api-user', 'servicenow-api-password'])
+        .then((it) => cred = new soap.BasicAuthSecurity(it))
+        .catch(log.error('could not get credentials'));
+    return cred;
 };

@@ -3,6 +3,5 @@ services:
   main:
     build: .
     volumes:
-      - .:/home/node/servicenow-integration
-      - /home/node/servicenow-integration/node_modules
+      - ./src:/home/node/servicenow-integration/src
     command: 'npm run dev'
