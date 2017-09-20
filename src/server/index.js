@@ -1,23 +1,18 @@
 'use strict';
 
-const Logger = require('ocbesbn-logger'); // Logger
 const server = require('ocbesbn-web-init'); // Web server
 const db = require('ocbesbn-db-init'); // Database
-
-const bouncer = require('ocbesbn-bouncer');
-
-const logger = new Logger({
+const config = require('ocbesbn-config');
+// const bouncer = require('ocbesbn-bouncer');
+const Logger = require('ocbesbn-logger'); // Logger
+const log = new Logger({
     context: {
         serviceName: 'servicenow-integration'
     }
 });
 
-logger.redirectConsoleOut(); // Force anyone using console outputs into Logger format.
+log.redirectConsoleOut(); // Force anyone using console outputs into Logger format.
 
-// Basic database and web server initialization.
-// See database : https://github.com/OpusCapitaBusinessNetwork/db-init
-// See web server: https://github.com/OpusCapitaBusinessNetwork/web-init
-// See logger: https://github.com/OpusCapita/logger
 db.init({
     mode: db.Mode.Dev,
     consul: {
@@ -29,16 +24,15 @@ db.init({
 })
     .then((db) => server.init({
         server: {
+            port: 1234,
             mode: server.Server.Mode.Dev,
             events: {
-                onStart: () => logger.info('Server ready. Allons-y!')
-            },
-            middlewares : [bouncer({
-                host : 'consul',
-                serviceName : 'servicenow-integration',
-                acl : require('./acl.json'), // TODO: ??!
-                aclServiceName : 'acl'
-            }).Middleware]
+                onStart: () => config.setProperty('servicenow-api-user', 'soap.user')
+                    .then(() => config.setProperty('servicenow-api-password', 'secret!!!')
+                        .then(() => log.info('Server up and running!'))
+                        .catch((it) => log.error('Could not initialize api credentials' + it)))
+                    .catch((it) => log.error(it))
+            }
         },
         routes: {
             dbInstance: db
