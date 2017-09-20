@@ -5,4 +5,4 @@ services:
     volumes:
       - .:/home/node/servicenow-integration
       - /home/node/servicenow-integration/node_modules
-    command: 'npm run local'
+    command: 'npm run dev'

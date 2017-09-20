@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const Promise = require('bluebird');
 const insert = require("./insert");
@@ -16,9 +16,9 @@ module.exports.init = function (app, db, config) {
     // Register routes here.
     // Use the passed db parameter in order to use Epilogue auto-routes.
     // Use require in order to separate routes into multiple js files.
-    // app.get('/', (req, res) => res.send('Hello world!'));
+    app.get('/', (req, res) => res.send('Hello world!'));
 
-    insert(app, db, config);
+    //insert(app, db, config);
 
     // Always return a promise.
     return Promise.resolve();
