@@ -13,13 +13,6 @@ const insert = require("./insert");
  * @see [Minimum setup]{@link https://github.com/OpusCapitaBusinessNetwork/web-init#minimum-setup}
  */
 module.exports.init = function (app, db, config) {
-    // Register routes here.
-    // Use the passed db parameter in order to use Epilogue auto-routes.
-    // Use require in order to separate routes into multiple js files.
-    app.get('/', (req, res) => res.send('Hello world!'));
-
-    //insert(app, db, config);
-
-    // Always return a promise.
+    insert(app, db, config);
     return Promise.resolve();
 };

@@ -27,11 +27,15 @@ db.init({
             port: 1234,
             mode: server.Server.Mode.Dev,
             events: {
-                onStart: () => config.setProperty('servicenow-api-user', 'soap.user')
-                    .then(() => config.setProperty('servicenow-api-password', 'secret!!!')
-                        .then(() => log.info('Server up and running!'))
-                        .catch((it) => log.error('Could not initialize api credentials' + it)))
-                    .catch((it) => log.error(it))
+                onStart: () => config.init({})
+                    .then(() => config.setProperty('servicenow-api-user', 'soap.user'))
+                    .then(() => config.setProperty('servicenow-api-password', 'secret!!!'))
+                    .then(() => config.setProperty('servicenow-api-uri', 'https://opusflowdev.service-now.com/u_evm_inbound.do?WSDL'))
+                    .then(() => log.info('Server up and running!'))
+                    .catch((it) => {
+                        log.error(it);
+                        log.error('Could not initiate service-now-credentials')
+                    })
             }
         },
         routes: {
