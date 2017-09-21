@@ -10,7 +10,7 @@
       "engine.labels.nodetype==worker"
     ],
     "publish": [
-      "mode=host,target=3001,published=3001,protocol=tcp"
+      "mode=host,target=3016,published=3016,protocol=tcp"
     ],
     "host": [
       "consul:172.17.0.1"

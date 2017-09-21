@@ -1,4 +1,3 @@
-const RedisEvents = require('ocbesbn-redis-events');    // what is this?
 const soap = require('soap');
 const config = require('ocbesbn-config');
 const Logger = require('ocbesbn-logger'); // Logger
@@ -9,26 +8,27 @@ const log = new Logger({
 });
 module.exports = function (app, db, config) {
     app.get('/', (req, res) => res.send('I am in insert.js'));
-    app.post('/api/servicenow/insert', (req, res) => res.send(createIssue(req, res)));
+    app.post('/api/servicenow/insert', (_req, _res) => createIssue(_req, _res));
 
 };
 
-let createIssue = function (req, res) {
+let createIssue = function (_req, _res) {
     config.getProperty(['servicenow-api-user', 'servicenow-api-password', 'servicenow-api-uri'])
         .then((cred) => {
-            //WSDL is password protected
-            let auth = ("Basic " + new Buffer(cred[0] + ':' + cred[1]).toString("base64"));
-            soap.createClient(cred[2], {wsdl_headers: {Authorization: auth}}, function (error, client) {
-                if (error) {
-                    throw error;
+            let auth = "Basic " + new Buffer(`${cred[0]}:${cred[1]}`).toString("base64");
+            soap.createClient(cred[2], {wsdl_headers: {Authorization: auth}}, function (wsdlError, client) {
+                if (wsdlError) {
+                    log.error(`WSDL-ERROR: \n${wsdlError}`);
+                    _res.status('500').send(getResponseJSON(false, "WSDL", null));
                 } else {
-                    let requestContent = getRequestData();
                     client.setSecurity(new soap.BasicAuthSecurity(cred[0], cred[1]));
-                    client.insert(requestContent, function (error, result) {
-                        if (error) {
-                            throw error;
+                    client.insert(getRequestData(_req), function (soapError, soapResponse) {
+                        if (soapError) {
+                            log.error(`SOAP-ERROR: \n${soapError}`);
+                            _res.status('500').send(getResponseJSON(false, "SOAP", null));
                         } else {
-                            res.send(result)
+                            log.info(soapResponse);
+                            _res.status('200').send(getResponseJSON(true, null, soapResponse.display_value));
                         }
                     });
                 }
@@ -36,17 +36,26 @@ let createIssue = function (req, res) {
         })
         .catch((error) => {
             log.error(error);
-            return res.status('500').json({message: error.message});
+            _res.status('500').send(getResponseJSON(false, "UNKNOWN", null));
         });
 };
-let getRequestData = function () {  // TODO: replace dummy-data with request-data and data from middleware (Customer,  User, etc...)
+let getRequestData = function (_req) {// TODO: replace dummy-data with request-data and data from middleware (Customer,  User, etc...)
+    log.info(_req.body);
     return {
         u_short_descr: 'SOAP Test',
         u_caller_id: 'Stefan.Tubben@opuscapita.com',
-        u_error_type: '\\OCSEFTP01\prod\Kundin\ssrca',	// List of error_types?
+        u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
         u_service: 'iPost Sweden',
         u_priority: '3',
         u_det_descr: 'det_descr',
         u_customer_id: 'OpusCapita'
     }
+};
+
+let getResponseJSON = function (success, type, ticketnumber) {
+    return {
+        success: success,
+        type: type,
+        servicenow_ticketnumber: ticketnumber
+    };
 };

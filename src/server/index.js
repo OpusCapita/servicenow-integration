@@ -3,7 +3,6 @@
 const server = require('ocbesbn-web-init'); // Web server
 const db = require('ocbesbn-db-init'); // Database
 const config = require('ocbesbn-config');
-// const bouncer = require('ocbesbn-bouncer');
 const Logger = require('ocbesbn-logger'); // Logger
 const log = new Logger({
     context: {
@@ -24,11 +23,11 @@ db.init({
 })
     .then((db) => server.init({
         server: {
-            port: 1234,
+            port: 3016,
             mode: server.Server.Mode.Dev,
             events: {
                 onStart: () => config.init({})
-                    .then(() => config.setProperty('servicenow-api-user', 'soap.user'))
+                    .then(() => config.setProperty('servicenow-api-user', 'soap.event'))
                     .then(() => config.setProperty('servicenow-api-password', 'secret!!!'))
                     .then(() => config.setProperty('servicenow-api-uri', 'https://opusflowdev.service-now.com/u_evm_inbound.do?WSDL'))
                     .then(() => log.info('Server up and running!'))
