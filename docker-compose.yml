@@ -10,9 +10,9 @@ services:
     labels:
       SERVICE_NAME: 'servicenow-integration'
     environment:
-      SERVICE_3001_CHECK_HTTP: /api/health/check
-      SERVICE_3001_CHECK_INTERVAL: 15s
-      SERVICE_3001_CHECK_TIMEOUT: 3s
+#      SERVICE_3001_CHECK_HTTP: /api/health/check
+#      SERVICE_3001_CHECK_INTERVAL: 15s
+#      SERVICE_3001_CHECK_TIMEOUT: 3s
       NODE_ENV: ${NODE_ENV}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -39,7 +39,7 @@ services:
       - consul
 
   redis:
-    image: opuscapita/redis:dev
+    image: ocbesbn/redis:latest
     ports:
       - '6379:6379'
     environment:

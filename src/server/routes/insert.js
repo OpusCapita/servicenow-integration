@@ -10,73 +10,115 @@ const log = new Logger({
 });
 module.exports = function (app, db, config) {
     app.get('/', (req, res) => res.send('I am in insert.js'));
-    app.post('/api/servicenow/insert', (req, res) => {
-        let result = createIssue(req, res);
-        res.status(result.statusId).send(result);
-    });
-    app.get('/api/servicenow/services', (req, res) => {
-        let result = checkServices();
-        res.status(result.statusId).send(result);
+    app.get('/api/servicenow/services', async (req, res) => {
+        let result = getServiceInformation();
+        let services = await result;  // await disarms the async call
+        if (services) {
+            let issueNumbers = processServiceInformation(services);
+            await issueNumbers;
+            res.status(200).send('OK');
+        } else {
+            res.status(500).send('Something bad happened :(');
+        }
     });
 };
 
-let checkServices = function () {
-    let resp = new ResponseStatus(500, '', '');
-    config.consul.catalog.services()
-        .then((it) => {
-            Object.keys(it)
-                .forEach(function (serviceName) {
-                    // without the {passing: true} param, this should return all Nodes
-                    config.consul.health.service({service: serviceName})
-                        .then((data) => {
-                            // log.info(data);
-                            for(let node in data){
-                                let currentNode = data[node];
-                                let totalChecks = currentNode.Checks.length;
-                                let passingChecks = 0;
-                                for(let check in currentNode.Checks){
-                                    let currentCheck = currentNode.Checks[check];
-                                    if(currentCheck.Status = 'passing')
-                                        passingChecks++;
-                                }
-                                log.info(`${serviceName} has ${totalChecks} Nodes! \n ${passingChecks} of ${totalChecks} health-checks passed`);
-                                //log.info(currentNode.Checks);
-                            }
-                            resp =  new ResponseStatus(200, 'SUCCESS', null);
-                        })
-                        .catch((error) => {
-                            log.error(error);
-                            resp = new ResponseStatus(500, 'CONSUL-API-ERROR', error);
-                        })
-                });
-        })
-        .catch((error) => {
-            log.error(error);
-            resp = new ResponseStatus(500, 'UNKNOWN', error);
-        });
-    return resp;
+/**
+ * summarizes service-information regarding passed health-checks
+ * @param services
+ * @returns {service1:{total: s1T , passing: s1P}
+ */
+let processServiceInformation = function (services) {
+    let createdIssues = [];
+    for (let i in services) {
+        try {
+            let currentService = services[i];
+            let serviceName = currentService[0].Service.Service;
+            let totalChecks = 0;
+            let passingChecks = 0;
+            for (let j in currentService) {
+                let currentNode = currentService[j];
+                const groupedChecks = groupBy(currentNode.Checks, check => check.Status);
+                totalChecks += currentNode.Checks.length;
+                passingChecks += groupedChecks.get('passing') === null ? 0 : groupedChecks.get('passing').length;
+            }
+            let sev = 0;
+            const serviceData = {
+                serviceName: serviceName,
+                total: totalChecks,
+                passed: passingChecks,
+                raw: currentService
+            };
+            sev = getSevState(serviceData);
+            if (sev > 0) {
+                log.info("creating issue for service " + serviceName);
+                let request = {
+                    u_short_descr: createIssueSubject(serviceData),
+                    u_caller_id: 'TUBBEST1',
+                    u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
+                    u_service: 'iPost Sweden',
+                    u_priority: sev,
+                    u_det_descr: createIssueBody(serviceData),
+                    u_customer_id: 'OpusCapita' // TODO: what id are we using here?
+                };
+                createIssue(request);
+            }
+        } catch (e) {
+            log.error(e);
+        }
+    }
+    return createdIssues;
 };
+let getSevState = function (serviceInfo) {
+    // TODO: custom-rules per service
+    log.info(serviceInfo);
+    return 2
+};
+
+let createIssueSubject = function (service) {
+    return nunjucks.render(__dirname + '/template/subject.njk', service);
+};
+
+let createIssueBody = function (service) {
+    service['raw'] = JSON.stringify(service['raw']);
+    return renderNunjucksTemplate(__dirname + '/template/issue.njk', service);
+};
+
+/**
+ * Method that calls consul-health api for information
+ * @returns {Promise.<TResult>} - [[Service-1], [Service-2]]
+ */
+let getServiceInformation = async function () {
+    return config.consul.catalog.services()
+        .then((services) => Object.keys(services))
+        .then((serviceNames) => Promise.all(serviceNames.map(
+            (name) => config.consul.health.service({service: name}))))
+        .then((it) => it)
+        .catch((error) => log.error(error));
+};
+
 /**
  * Function to create service-now issues by using soap-interface
- * @param requestBody - request-param --> requestBody.body is used as SOAP-request body.
+ * @param request - request-param --> requestBody.body is used as SOAP-request body.
  */
-let createIssue = function (requestBody) {
-    config.getProperty(['servicenow-api-user', 'servicenow-api-password', 'servicenow-api-uri'])
+let createIssue = async function (request) {
+    let resp = new ResponseStatus(500, '', '');
+    let wait4Me =  config.getProperty(['servicenow-api-user', 'servicenow-api-password', 'servicenow-api-uri'])
         .then((cred) => {
             let auth = "Basic " + new Buffer(`${cred[0]}:${cred[1]}`).toString("base64");
-            soap.createClient(cred[2], {wsdl_headers: {Authorization: auth}}, function (wsdlError, client) {
+            soap.createClient(cred[2], {wsdl_headers: {Authorization: auth}}, async function (wsdlError, client) {
                 if (wsdlError) {
                     log.error(`WSDL-ERROR: \n${wsdlError}`);
-                    return new ResponseStatus(500, "WSDL, null");
+                    resp = new ResponseStatus(500, "WSDL", null);
                 } else {
                     client.setSecurity(new soap.BasicAuthSecurity(cred[0], cred[1]));
-                    client.insert(getRequestData(requestBody), function (soapError, soapResponse) {
+                    client.insert(request, async function (soapError, soapResponse) {
                         if (soapError) {
                             log.error(`SOAP-ERROR: \n${soapError}`);
-                            return new ResponseStatus(500, "SOAP", null);
+                            resp = new ResponseStatus(500, "SOAP", null);
                         } else {
                             log.info(soapResponse);
-                            return new ResponseStatus(200, null, `Servicenow-Ticketnumber: ${soapResponse.display_value}`);
+                            resp = new ResponseStatus(200, null, `Servicenow-Ticketnumber: ${soapResponse.display_value}`);
                         }
                     });
                 }
@@ -84,43 +126,14 @@ let createIssue = function (requestBody) {
         })
         .catch((error) => {
             log.error(error);
-            return new ResponseStatus(500, "UNKNOWN", null);
-        });
+            resp = new ResponseStatus(500, "UNKNOWN", null);
+        })
+        .then((it) => it);
+    await wait4Me;
+    return resp;
 };
 
-let getRequestData = function (_req) { // TODO: replace dummy-data with request-data and data from middleware (Customer,  User, etc...)
-    let inputJSON;
-    if (_req.body) {
-        try {
-            inputJSON = JSON.parse(_req.body);
-            return inputJSON;
-        } catch (e) {
-            log.error("input could not be parsed into JSON: " + e.message);
-        }
-    }
-    return {
-        u_short_descr: 'short desc is short',
-        u_caller_id: getUserField(_req, 'email', 'Stefan.Tubben@opuscapita.com'),
-        u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
-        u_service: 'iPost Sweden',
-        u_priority: '3',
-        u_det_descr: 'det_descr',
-        u_customer_id: getUserField(_req, 'customerid', 'OpusCapita') // TODO: what id are we using here?
-    }
-};
-
-let getUserField = function (_req, field, default_value) {
-    let value = _req.opuscapita.userData(field);
-    if (!value && default_value) {
-        value = default_value;
-    }
-    if (!value) {
-        log.warn(`Could not find value for field (${field}) - neither was a default-value given`);
-        value = '';
-    }
-    return value
-};
-
+/////// Classes
 /**
  * Class that holds status information
  */
@@ -130,4 +143,30 @@ class ResponseStatus {
         this.msg = msg;
         this.additionalInfo = additionalInfo;
     }
+}
+
+////// Utility-Methods
+/**
+ *  Simple function to group listitems by the result of the keyGetter-method
+ * @param list
+ * @param keyGetter
+ * @returns {Map}
+ */
+function groupBy(list, keyGetter) {
+    const map = new Map();
+    list.forEach((item) => {
+        const key = keyGetter(item);
+        const collection = map.get(key);
+        if (!collection) {
+            map.set(key, [item]);
+        } else {
+            collection.push(item);
+        }
+    });
+    return map;
+}
+
+function renderNunjucksTemplate(template, data) {
+    nunjucks.configure({autoescape: false});
+    return nunjucks.render(template, data);
 }
