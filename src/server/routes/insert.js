@@ -1,14 +1,16 @@
 'use strict';
+const helper = require('./helper');
+const md5 = require('md5');
 const fs = require('fs');
 const soap = require('soap');
 const config = require('ocbesbn-config');
-const nunjucks = require('nunjucks');
 const Logger = require('ocbesbn-logger'); // Logger
 const log = new Logger({
     context: {
         serviceName: 'servicenow-integration'
     }
 });
+let cachedSoapCredentials;
 module.exports = function (app, db, config) {
     app.get('/', (req, res) => res.send('I am in insert.js'));
     app.get('/api/servicenow/services', async (req, res) => {
@@ -38,7 +40,7 @@ let processHealthChecks = function (services) {
             let passingChecks = 0;
             for (let j in currentService) {
                 let currentNode = currentService[j];
-                const groupedChecks = groupBy(currentNode.Checks, check => check.Status);
+                const groupedChecks = helper.groupBy(currentNode.Checks, check => check.Status);
                 totalChecks += currentNode.Checks.length;
                 passingChecks += groupedChecks.get('passing') === null ? 0 : groupedChecks.get('passing').length;
             }
@@ -49,20 +51,11 @@ let processHealthChecks = function (services) {
                 passed: passingChecks,
                 raw: currentService
             };
-            sev = 2 //getSevState(serviceData);
+            log.info(md5(JSON.stringify(serviceData)));
+            sev = getSevState(serviceData);
             if (sev > 0) {
-                log.info("creating issue for service " + serviceName);
-                let request = {
-                    u_short_descr: createIssueSubject(serviceData),
-                    u_caller_id: 'TUBBEST1',    // Whos ocnet-id should be used?
-                    u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
-                    //u_service: 'iPost Sweden',  // service needed?
-                    u_priority: sev,
-                    u_det_descr: createIssueBody(serviceData),
-                    u_customer_id: 'OpusCapita' // TODO: what id are we using here?
-                };
+                createHealthIssue(serviceData, sev);
                 issuedServices[serviceData.serviceName] = sev;
-                createIssue(request);
             }
         } catch (e) {
             log.error(e);
@@ -84,13 +77,49 @@ let getSevState = function (serviceData) {
     return sevScript.exec(serviceData);
 };
 
-let createIssueSubject = function (service) {
-    return nunjucks.render(`${__dirname}/template/subject.njk`, service);
+let createHealthIssue = function (serviceData, sev) {
+    log.info("creating issue for service " + serviceData.serviceName);
+    let request = {
+        u_short_descr: createHealthIssueSubject(serviceData),
+        u_caller_id: 'TUBBEST1',    // Whos ocnet-id should be used?
+        u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
+        //u_service: 'iPost Sweden',  // service needed?
+        u_priority: sev,
+        u_det_descr: createHealthIssueBody(serviceData),
+        u_customer_id: 'OpusCapita' // TODO: what id are we using here?
+    };
+    createIssue(request);
 };
 
-let createIssueBody = function (service) {
+let createHealthIssueSubject = function (service) {
+    return helper.renderTemplate(`${__dirname}/template/health_subject.njk`, service);
+};
+
+let createHealthIssueBody = function (service) {
     service['raw'] = JSON.stringify(service['raw']);
-    return renderNunjucksTemplate(`${__dirname}/template/issue.njk`, service);
+    return helper.renderTemplate(`${__dirname}/template/health_body.njk`, service);
+};
+
+let createEscalationIssue = function (ee) {
+    log.info("creating escalation issue!");
+    let request = {
+        u_short_descr: createEscalationIssueSubject(ee),
+        u_caller_id: 'TUBBEST1',    // Whos ocnet-id should be used?
+        u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
+        //u_service: 'iPost Sweden',  // service needed?
+        u_priority: 1,
+        u_det_descr: createEscalationIssueBody(ee),
+        u_customer_id: 'OpusCapita' // TODO: what id are we using here?
+    };
+    createIssue(request);
+};
+
+let createEscalationIssueSubject = function (ee) {
+    return helper.renderTemplate(`${__dirname}/template/escalation_subject.njk`, ee);
+};
+
+let createEscalationIssueBody = function (ee) {
+    return helper.renderTemplate(`${__dirname}/template/escalation_body.njk`, ee);
 };
 
 /**
@@ -103,7 +132,10 @@ let getServiceInformation = async function () {
         .then((serviceNames) => Promise.all(serviceNames.map(
             (name) => config.consul.health.service({service: name}))))
         .then((it) => it)
-        .catch((error) => log.error(error));
+        .catch((error) => {
+            log.error(error);
+            createEscalationIssue(new EscalationException('Consul down!', error));
+        });
 };
 
 /**
@@ -111,7 +143,8 @@ let getServiceInformation = async function () {
  * @param request - request-param --> requestBody.body is used as SOAP-request body.
  */
 let createIssue = function (request) {
-    return config.getProperty(['servicenow-api-user', 'servicenow-api-password', 'servicenow-api-uri'])
+    log.info('creating issue');
+    getSoapCredentials()
         .then((cred) => {
             let auth = "Basic " + new Buffer(`${cred[0]}:${cred[1]}`).toString("base64");
             soap.createClient(cred[2], {wsdl_headers: {Authorization: auth}}, function (wsdlError, client) {
@@ -132,33 +165,36 @@ let createIssue = function (request) {
             });
         })
         .catch((error) => {
+            // TODO: consul dead == no credentials!
+            // TODO: save them in memory ?
             log.error(error);
+        })
+};
+
+let getSoapCredentials = function () {
+    return config.getProperty(['servicenow-api-user', 'servicenow-api-password', 'servicenow-api-uri'])
+        .catch((error) => {
+            log.error(error);
+            if (cachedSoapCredentials) {
+                log.info('taking soap credentials from memory!');
+                return cachedSoapCredentials;
+            }
+        })
+        .then((credentials) => {
+            if (!cachedSoapCredentials) {
+                log.info('saving soap credentials into memory');
+                cachedSoapCredentials = credentials;
+            }
+            return credentials
         })
         .then((it) => it);
 };
 
-////// Utility-Methods
-/**
- *  Simple function to group listitems by the result of the keyGetter-method
- * @param list
- * @param keyGetter
- * @returns {Map}
- */
-function groupBy(list, keyGetter) {
-    const map = new Map();
-    list.forEach((item) => {
-        const key = keyGetter(item);
-        const collection = map.get(key);
-        if (!collection) {
-            map.set(key, [item]);
-        } else {
-            collection.push(item);
-        }
-    });
-    return map;
-}
 
-function renderNunjucksTemplate(template, data) {
-    nunjucks.configure({autoescape: false});
-    return nunjucks.render(template, data);
+/////// Classes
+class EscalationException {
+    constructor(reason, error) {
+        this.reason = reason;
+        this.error = error;
+    }
 }

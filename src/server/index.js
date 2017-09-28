@@ -29,9 +29,6 @@ db.init({
             mode: server.Server.Mode.Dev,
             events: {
                 onStart: () => config.init({})
-                    .then(() => config.setProperty('servicenow-api-user', 'soap.event'))
-                    .then(() => config.setProperty('servicenow-api-password', 'secret!!!'))
-                    .then(() => config.setProperty('servicenow-api-uri', 'https://opusflowdev.service-now.com/u_evm_inbound.do?WSDL'))
                     .then(() => log.info('Server up and running!'))
                     .catch((it) => {
                         log.error(it);
