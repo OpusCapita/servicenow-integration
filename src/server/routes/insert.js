@@ -13,7 +13,7 @@ const log = new Logger({
 let cachedSoapCredentials;
 module.exports = function (app, db, config) {
     app.get('/', (req, res) => res.send('I am in insert.js'));
-    app.get('/api/servicenow/services', async (req, res) => {
+    app.get('/api/health-checks', async (req, res) => {
         let result = getServiceInformation();
         let services = await result;  // await disarms the async call
         if (services) {
@@ -38,6 +38,7 @@ let processHealthChecks = function (services) {
             let serviceName = currentService[0].Service.Service;
             let totalChecks = 0;
             let passingChecks = 0;
+            let currentDeployments = checkDeployments(serviceName);
             for (let j in currentService) {
                 let currentNode = currentService[j];
                 const groupedChecks = helper.groupBy(currentNode.Checks, check => check.Status);
@@ -49,6 +50,7 @@ let processHealthChecks = function (services) {
                 serviceName: serviceName,
                 total: totalChecks,
                 passed: passingChecks,
+                deploying : currentDeployments,
                 raw: currentService
             };
             log.info(md5(JSON.stringify(serviceData)));
@@ -62,6 +64,10 @@ let processHealthChecks = function (services) {
         }
     }
     return issuedServices;
+};
+
+let checkDeployments = function(serviceData){
+
 };
 
 let getSevState = function (serviceData) {
@@ -92,12 +98,12 @@ let createHealthIssue = function (serviceData, sev) {
 };
 
 let createHealthIssueSubject = function (service) {
-    return helper.renderTemplate(`${__dirname}/template/health_subject.njk`, service);
+    return helper.renderTemplate(`${__dirname}/templates/health_subject.njk`, service);
 };
 
 let createHealthIssueBody = function (service) {
     service['raw'] = JSON.stringify(service['raw']);
-    return helper.renderTemplate(`${__dirname}/template/health_body.njk`, service);
+    return helper.renderTemplate(`${__dirname}/templates/health_body.njk`, service);
 };
 
 let createEscalationIssue = function (ee) {
@@ -115,11 +121,11 @@ let createEscalationIssue = function (ee) {
 };
 
 let createEscalationIssueSubject = function (ee) {
-    return helper.renderTemplate(`${__dirname}/template/escalation_subject.njk`, ee);
+    return helper.renderTemplate(`${__dirname}/templates/escalation_subject.njk`, ee);
 };
 
 let createEscalationIssueBody = function (ee) {
-    return helper.renderTemplate(`${__dirname}/template/escalation_body.njk`, ee);
+    return helper.renderTemplate(`${__dirname}/templates/escalation_body.njk`, ee);
 };
 
 /**
