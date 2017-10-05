@@ -13,60 +13,89 @@ module.exports = function (app, db, config) {
     app.get('/', (req, res) => res.send('I am in insert.js'));
     app.get('/api/health-checks',
         (req, res) => doHealthCheck()
-            .then((result) => res.send('TODO!'))
+            .then((result) => res.send(result))
+            .catch((error) => res.status(500).send(error))
     );
 };
 
 let doHealthCheck = function () {
-    getServices()
-        .then((services) => getServiceHealth(services))
-        .then((healthChecks) => {
-            return new Promise((resolve, reject) => {
-                let createsIssues = [];
-                for (let i in healthChecks) {
-                    try {
-                        let currentService = healthChecks[i];
-                        let serviceName = currentService[0].Service.Service;
-                        let totalChecks = 0;
-                        let passingChecks = 0;
-                        let currentDeployments = checkDeployments(serviceName);
-                        for (let j in currentService) {
-                            let currentNode = currentService[j];
-                            const groupedChecks = helper.groupBy(currentNode.Checks, check => check.Status);
-                            totalChecks += currentNode.Checks.length;
-                            passingChecks += groupedChecks.get('passing') === null ? 0 : groupedChecks.get('passing').length;
-                        }
-                        let serviceData = {
-                            serviceName: serviceName,
-                            total: totalChecks,
-                            passed: passingChecks,
-                            deploying: currentDeployments,
-                            raw: currentService,
-                        };
-                        serviceData['sev'] = getSevState(serviceData);
-                        if (serviceData['sev'] > 0) {
-                            createHealthIssue(serviceData);
-                        }
-                    } catch (e) {
-                        log.error(e);
-                    }
-                }
-                resolve(createsIssues);
-            });
-        })
-    // TODO: then(
+    return getServiceHealth()
+        .then(healthChecks => filterHealthChecks(healthChecks))
+        .then((filteredChecks) =>
+            Promise.all(
+                filteredChecks.map(
+                    serviceData => createHealthIssue(serviceData)
+                )
+            )
+        )
 };
 
-let createHealthIssue = function (serviceData) {
-    // TODO: render template
-    // TODO: create request
-    // TODO: send request
-
+let filterHealthChecks = function (healthChecks) {
+    let filteredIssues = [];
+    for (let currentService of healthChecks) {
+        try {
+            let serviceName = currentService[0].Service.Service;
+            let totalChecks = 0;
+            let passingChecks = 0;
+            let currentDeployments = checkDeployments(serviceName);
+            for (let currentNode of currentService) {
+                const groupedChecks = helper.groupBy(currentNode.Checks, check => check.Status);
+                totalChecks += currentNode.Checks.length;
+                passingChecks += groupedChecks.get('passing') === null ? 0 : groupedChecks.get('passing').length;
+            }
+            let serviceData = {
+                serviceName: serviceName,
+                total: totalChecks,
+                passed: passingChecks,
+                deploying: currentDeployments,
+                raw: currentService,
+            };
+            serviceData['sev'] = 3; //getSevState(serviceData);
+            if (serviceData['sev'] > 0) {
+                filteredIssues.push(serviceData);
+            }
+        } catch (e) {
+            log.error(e);
+        }
+    }
+    return filteredIssues;
 };
 
 let checkDeployments = function (serviceName) {
+    // TODO: use circleCI API to check for current deployments
     return false;
 };
+
+
+let createHealthIssue = function (serviceData) {
+    log.info("creating issue for service " + serviceData.serviceName);
+    let request = {
+        u_short_descr: createHealthIssueSubject(serviceData),
+        u_caller_id: 'TUBBEST1',    // Whos ocnet-id should be used?
+        u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
+        //u_service: 'iPost Sweden',  // service needed?
+        u_priority: serviceData['sev'],
+        u_det_descr: createHealthIssueBody(serviceData),
+        u_customer_id: 'OpusCapita' // TODO: what id are we using here?
+    };
+    return sendServiceNowRequest(request);
+};
+
+let createHealthIssueSubject = function (serviceData) {
+    return helper.renderTemplate(`${__dirname}/templates/health_subject.njk`, serviceData);
+};
+
+let createHealthIssueBody = function (serviceData) {
+    serviceData['raw'] = JSON.stringify(serviceData['raw']);
+    return helper.renderTemplate(`${__dirname}/templates/health_body.njk`, serviceData);
+};
+
+let sendServiceNowRequest = function (request) {
+    return config.getProperty(['servicenow-api-user', 'servicenow-api-password', 'servicenow-api-uri'])
+        .then(cred => createSoapClient(cred[0], cred[1], cred[2]))
+        .then(client => doServiceNowInsert(client, request))
+};
+
 
 let getSevState = function (serviceData) {
     let sevScript;
@@ -81,12 +110,8 @@ let getSevState = function (serviceData) {
     return sevScript.exec(serviceData);
 };
 
-let getServices = function () {
-    return config.consul.catalog.services();
-};
-
-let getServiceHealth = function (services) {
-    return services
+let getServiceHealth = function () {
+    return config.consul.catalog.services()
         .then((services) => Object.keys(services))
         .then((serviceNames) =>
             Promise.all(
@@ -95,12 +120,6 @@ let getServiceHealth = function (services) {
                 )
             )
         );
-};
-
-let sendServiceNowRequest = function (request) {
-    return config.getProperty(['servicenow-api-user', 'servicenow-api-password', 'servicenow-api-uri'])
-        .then((cred) => createSoapClient(cred[0], cred[1], cred[2]))
-        .then((client) => doServiceNowInsert(client, request))
 };
 
 let createSoapClient = function (user, password, uri) {
@@ -128,16 +147,3 @@ let doServiceNowInsert = function (client, request) {
         });
     })
 };
-
-/// Classes
-class ServiceNowInsertRequest {
-    constructor(short_desc, long_desc, caller, error_type, service, prio, customer_id) {
-        this.u_short_descr = short_desc;
-        this.u_caller_id = caller;
-        this.u_error_type = error_type; // "\\OCSEFTP01\prod\Kundin\ssrca"
-        this.u_service = service; //'iPost Sweden'
-        this.u_priority = prio;
-        this.u_det_descr = long_desc;
-        this.u_customer_id = customer_id;
-    }
-}
