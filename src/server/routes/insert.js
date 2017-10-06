@@ -1,73 +1,125 @@
 'use strict';
-const helper = require('./helper');
-const md5 = require('md5');
-const fs = require('fs');
-const soap = require('soap');
 const config = require('ocbesbn-config');
 const Logger = require('ocbesbn-logger'); // Logger
+const helper = require('./helper');
+const fs = require('fs');
+const soap = require('soap');
 const log = new Logger({
     context: {
         serviceName: 'servicenow-integration'
     }
 });
-let cachedSoapCredentials;
+let cachedCredentials = [];
+
 module.exports = function (app, db, config) {
     app.get('/', (req, res) => res.send('I am in insert.js'));
-    app.get('/api/health-checks', async (req, res) => {
-        let result = getServiceInformation();
-        let services = await result;  // await disarms the async call
-        if (services) {
-            res.status(200).send('OK ' + JSON.stringify(await processHealthChecks(services)));
-        } else {
-            res.status(500).send('Something bad happened :(');
-        }
-    });
+    app.get('/api/health-checks',
+        (req, res) => doHealthCheck()
+            .then((result) => res.send(result))
+            .catch((error) => res.status(500).send(error))  // TODO: escalation issue?
+    );
 };
 
-/**
- * summarizes service-information regarding passed health-checks
- * @param services
- * @returns Object {service1:{total: s1T , passing: s1P}}
- */
-let processHealthChecks = function (services) {
-    let issuedServices = {};
-    log.info(services);
-    for (let i in services) {
+let doHealthCheck = function () {
+    return getServiceHealth()
+        .then(healthChecks => analyseHealthChecks(healthChecks))        // grouping by status and summing
+        .then(healthChecks => enrichWithDeploymentInfo(healthChecks))   // check for circle ci deployment
+        .then(healthChecks => enrichWithSevInfo(healthChecks))          // use enriched healthChecks to determine sev-state
+        .then(healthChecks => filterBySev(healthChecks))                // filtering based on sev
+        // TODO: check for duplicates on serviceNow
+        // TODO: how to get non-EVM-Ticket-ID ??!
+        // TODO: what if db is down and existing tickets cant be checked?
+        // .then(healthChecks => filterByExistingIssues(healthChecks))
+        .then(healthChecks =>
+            Promise.all(
+                healthChecks.map(
+                    check => createHealthIssue(check)                   // creating issues
+                )
+            )
+        );  // returns list of insert-responses(json)
+};
+
+let analyseHealthChecks = function (healthChecks) {
+    let filteredIssues = [];
+    for (let currentService of healthChecks) {
         try {
-            let currentService = services[i];
             let serviceName = currentService[0].Service.Service;
             let totalChecks = 0;
             let passingChecks = 0;
-            let currentDeployments = checkDeployments(serviceName);
-            for (let j in currentService) {
-                let currentNode = currentService[j];
+            for (let currentNode of currentService) {
                 const groupedChecks = helper.groupBy(currentNode.Checks, check => check.Status);
                 totalChecks += currentNode.Checks.length;
                 passingChecks += groupedChecks.get('passing') === null ? 0 : groupedChecks.get('passing').length;
             }
-            let sev = 0;
-            const serviceData = {
+            let serviceData = {
                 serviceName: serviceName,
                 total: totalChecks,
                 passed: passingChecks,
-                deploying : currentDeployments,
-                raw: currentService
+                raw: currentService,
             };
-            log.info(md5(JSON.stringify(serviceData)));
-            sev = getSevState(serviceData);
-            if (sev > 0) {
-                createHealthIssue(serviceData, sev);
-                issuedServices[serviceData.serviceName] = sev;
-            }
+            filteredIssues.push(serviceData);
         } catch (e) {
             log.error(e);
         }
     }
-    return issuedServices;
+    log.info(filteredIssues);
+    return filteredIssues;
 };
 
-let checkDeployments = function(serviceData){
+let enrichWithDeploymentInfo = function (healthChecks) {
+    return Promise.all(
+        healthChecks.map(
+            check => {
+                check['deploying'] = 0; // TODO: use circle ci api
+                return check;
+            }
+        )
+    )
+};
 
+let enrichWithSevInfo = function (healthChecks) {
+    return Promise.all(
+        healthChecks.map(
+            check => {
+                check['sev'] = getSevState(check);
+                check['sev'] = 2;
+                return check;
+            }
+        )
+    )
+};
+
+let filterBySev = function (healthChecks) {
+    return healthChecks.filter(it => it['sev'] > 0);
+};
+
+let createHealthIssue = function (check) {
+    let request = {
+        u_short_descr: createHealthIssueSubject(check),
+        u_caller_id: 'TUBBEST1',    // Whos ocnet-id should be used?
+        u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
+        //u_service: 'iPost Sweden',  // service needed?
+        u_priority: check['sev'],
+        u_assignment_group: 'OC CS GLOB Service Desk AM',
+        u_det_descr: createHealthIssueBody(check),
+        u_customer_id: 'OpusCapita' // TODO: what id are we using here?
+    };
+    return sendServiceNowRequest(request);
+};
+
+let createHealthIssueSubject = function (serviceData) {
+    return helper.renderTemplate(`${__dirname}/templates/health_subject.njk`, serviceData);
+};
+
+let createHealthIssueBody = function (serviceData) {
+    serviceData['raw'] = JSON.stringify(serviceData['raw']);
+    return helper.renderTemplate(`${__dirname}/templates/health_body.njk`, serviceData);
+};
+
+let sendServiceNowRequest = function (request) {
+    return getSoapCredentials()
+        .then(cred => createSoapClient(cred[0], cred[1], cred[2]))
+        .then(client => doServiceNowInsert(client, request))
 };
 
 let getSevState = function (serviceData) {
@@ -83,122 +135,96 @@ let getSevState = function (serviceData) {
     return sevScript.exec(serviceData);
 };
 
-let createHealthIssue = function (serviceData, sev) {
-    log.info("creating issue for service " + serviceData.serviceName);
-    let request = {
-        u_short_descr: createHealthIssueSubject(serviceData),
-        u_caller_id: 'TUBBEST1',    // Whos ocnet-id should be used?
-        u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
-        //u_service: 'iPost Sweden',  // service needed?
-        u_priority: sev,
-        u_det_descr: createHealthIssueBody(serviceData),
-        u_customer_id: 'OpusCapita' // TODO: what id are we using here?
-    };
-    createIssue(request);
+let getServiceHealth = function () {
+    return getServiceList()
+        .then(services => Object.keys(services))
+        .then(serviceNames =>
+            Promise.all(
+                serviceNames.map((service) =>
+                    config.consul.health.service({service: service})
+                )
+            )
+        );
 };
 
-let createHealthIssueSubject = function (service) {
-    return helper.renderTemplate(`${__dirname}/templates/health_subject.njk`, service);
-};
-
-let createHealthIssueBody = function (service) {
-    service['raw'] = JSON.stringify(service['raw']);
-    return helper.renderTemplate(`${__dirname}/templates/health_body.njk`, service);
-};
-
-let createEscalationIssue = function (ee) {
-    log.info("creating escalation issue!");
-    let request = {
-        u_short_descr: createEscalationIssueSubject(ee),
-        u_caller_id: 'TUBBEST1',    // Whos ocnet-id should be used?
-        u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
-        //u_service: 'iPost Sweden',  // service needed?
-        u_priority: 1,
-        u_det_descr: createEscalationIssueBody(ee),
-        u_customer_id: 'OpusCapita' // TODO: what id are we using here?
-    };
-    createIssue(request);
-};
-
-let createEscalationIssueSubject = function (ee) {
-    return helper.renderTemplate(`${__dirname}/templates/escalation_subject.njk`, ee);
-};
-
-let createEscalationIssueBody = function (ee) {
-    return helper.renderTemplate(`${__dirname}/templates/escalation_body.njk`, ee);
-};
-
-/**
- * Method that calls consul-health api for information
- * @returns {Promise.<TResult>} - [[Service-1], [Service-2]]
- */
-let getServiceInformation = async function () {
+const getServiceList = function () {
     return config.consul.catalog.services()
-        .then((services) => Object.keys(services))
-        .then((serviceNames) => Promise.all(serviceNames.map(
-            (name) => config.consul.health.service({service: name}))))
-        .then((it) => it)
-        .catch((error) => {
+        .catch(error => {
             log.error(error);
-            createEscalationIssue(new EscalationException('Consul down!', error));
-        });
+            let escalation = new Escalation('Could not get services from consul', error);
+            createEscalationIssue(escalation);
+            return [];
+        })
 };
 
-/**
- * Function to create service-now issues by using soap-interface
- * @param request - request-param --> requestBody.body is used as SOAP-request body.
- */
-let createIssue = function (request) {
-    log.info('creating issue');
-    getSoapCredentials()
-        .then((cred) => {
-            let auth = "Basic " + new Buffer(`${cred[0]}:${cred[1]}`).toString("base64");
-            soap.createClient(cred[2], {wsdl_headers: {Authorization: auth}}, function (wsdlError, client) {
-                if (wsdlError) {
-                    log.error(`WSDL-ERROR`);
-                    log.error(wsdlError);
-                } else {
-                    client.setSecurity(new soap.BasicAuthSecurity(cred[0], cred[1]));
-                    client.insert(request, function (soapError, soapResponse) {
-                        if (soapError) {
-                            log.error(`SOAP-ERROR:`);
-                            log.error(soapError);
-                        } else {
-                            log.info(soapResponse);
-                        }
-                    });
-                }
-            });
-        })
-        .catch((error) => {
-            // TODO: consul dead == no credentials!
-            // TODO: save them in memory ?
-            log.error(error);
-        })
+let createSoapClient = function (user, password, uri) {
+    let auth = "Basic " + new Buffer(`${user}:${password}`).toString("base64");
+    return new Promise((resolve, reject) => {
+        soap.createClient(uri, {wsdl_headers: {Authorization: auth}}, (wsdlError, client) => {
+            if (wsdlError) {
+                return reject(wsdlError);
+            } else {
+                client.setSecurity(new soap.BasicAuthSecurity(user, password));
+                return resolve(client)
+            }
+        });
+    })
+};
+
+let doServiceNowInsert = function (client, request) {
+    return new Promise((resolve, reject) => {
+        client.insert(request, (soapError, soapResponse) => {
+            if (soapError) {
+                return reject(soapError)
+            } else {
+                log.info(soapResponse);
+                return resolve(soapResponse)
+            }
+        });
+    })
 };
 
 let getSoapCredentials = function () {
     return config.getProperty(['servicenow-api-user', 'servicenow-api-password', 'servicenow-api-uri'])
-        .catch((error) => {
+        .catch(error => {
             log.error(error);
-            if (cachedSoapCredentials) {
+            if (cachedCredentials) {
                 log.info('taking soap credentials from memory!');
-                return cachedSoapCredentials;
+                return cachedCredentials;
             }
         })
-        .then((credentials) => {
-            if (!cachedSoapCredentials) {
+        .then(credentials => {
+            if (!cachedCredentials) {
                 log.info('saving soap credentials into memory');
-                cachedSoapCredentials = credentials;
+                cachedCredentials = credentials;
             }
             return credentials
         })
-        .then((it) => it);
 };
 
+let createEscalationIssue = function (escalation) {
+    log.info("creating escalation issue!");
+    let request = {
+        u_short_descr: createEscalationIssueSubject(escalation),
+        u_caller_id: 'TUBBEST1',    // Whos ocnet-id should be used?
+        u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
+        //u_service: 'iPost Sweden',  // service needed?
+        u_priority: 1,
+        u_det_descr: createEscalationIssueBody(escalation),
+        u_customer_id: 'OpusCapita' // TODO: what id are we using here?
+    };
+    sendServiceNowRequest(request);
+};
 
-/////// Classes
-class EscalationException {
+let createEscalationIssueSubject = function (escalation) {
+    return helper.renderTemplate(`${__dirname}/templates/escalation_subject.njk`, escalation);
+};
+
+let createEscalationIssueBody = function (escalation) {
+    return helper.renderTemplate(`${__dirname}/templates/escalation_body.njk`, escalation);
+};
+
+class Escalation {
     constructor(reason, error) {
         this.reason = reason;
         this.error = error;
