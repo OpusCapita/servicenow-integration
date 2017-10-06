@@ -26,8 +26,7 @@
     "sequelize": "^4.0.0",
     "nunjucks": "^3.0.0",
     "soap": "^0.21.0",
-    "md5": "^2.2.1",
-    "circleci": "^0.3.3"
+    "md5": "^2.2.1"
   },
   "devDependencies": {
     "jsdoc-to-markdown": "^3.0.0",

@@ -2,6 +2,7 @@
 
 const Promise = require('bluebird');
 const insert = require("./insert");
+const healthcheck = require('./healthcheck');
 
 /**
  * Initializes all routes for RESTful access.
@@ -14,5 +15,6 @@ const insert = require("./insert");
  */
 module.exports.init = function (app, db, config) {
     insert(app, db, config);
+    healthcheck(app, db, config);
     return Promise.resolve();
 };

@@ -1,8 +1,6 @@
 'use strict';
 const config = require('ocbesbn-config');
 const Logger = require('ocbesbn-logger'); // Logger
-const helper = require('./helper');
-const fs = require('fs');
 const soap = require('soap');
 const log = new Logger({
     context: {
@@ -12,152 +10,78 @@ const log = new Logger({
 let cachedCredentials = [];
 
 module.exports = function (app, db, config) {
-    app.get('/', (req, res) => res.send('I am in insert.js'));
-    app.get('/api/health-checks',
-        (req, res) => doHealthCheck()
-            .then((result) => res.send(result))
-            .catch((error) => res.status(500).send(error))  // TODO: escalation issue?
+    app.get('/',
+        (req, res) => res.send('Welcome to servicenow-integration')
+    );
+    app.post('/api/insert',
+        (req, res) => handleInsertByApi(req)
+            .then(result => res.send(result))
+            .catch(error => res.status(500).send(error))
     );
 };
 
-let doHealthCheck = function () {
-    return getServiceHealth()
-        .then(healthChecks => analyseHealthChecks(healthChecks))        // grouping by status and summing
-        .then(healthChecks => enrichWithDeploymentInfo(healthChecks))   // check for circle ci deployment
-        .then(healthChecks => enrichWithSevInfo(healthChecks))          // use enriched healthChecks to determine sev-state
-        .then(healthChecks => filterBySev(healthChecks))                // filtering based on sev
-        // TODO: check for duplicates on serviceNow
-        // TODO: how to get non-EVM-Ticket-ID ??!
-        // TODO: what if db is down and existing tickets cant be checked?
-        // .then(healthChecks => filterByExistingIssues(healthChecks))
-        .then(healthChecks =>
-            Promise.all(
-                healthChecks.map(
-                    check => createHealthIssue(check)                   // creating issues
-                )
-            )
-        );  // returns list of insert-responses(json)
-};
-
-let analyseHealthChecks = function (healthChecks) {
-    let filteredIssues = [];
-    for (let currentService of healthChecks) {
+const handleInsertByApi = function (req) {
+    return new Promise((resolve, reject) => {
         try {
-            let serviceName = currentService[0].Service.Service;
-            let totalChecks = 0;
-            let passingChecks = 0;
-            for (let currentNode of currentService) {
-                const groupedChecks = helper.groupBy(currentNode.Checks, check => check.Status);
-                totalChecks += currentNode.Checks.length;
-                passingChecks += groupedChecks.get('passing') === null ? 0 : groupedChecks.get('passing').length;
-            }
-            let serviceData = {
-                serviceName: serviceName,
-                total: totalChecks,
-                passed: passingChecks,
-                raw: currentService,
-            };
-            filteredIssues.push(serviceData);
-        } catch (e) {
-            log.error(e);
+            let request = JSON.parse(req.body);
+            request = validateCustomRequest(request);
+            return resolve(sendServiceNowRequest(request));
+        } catch (error) {
+            log.error(error);
+            return reject(error.message);
         }
-    }
-    log.info(filteredIssues);
-    return filteredIssues;
+    });
 };
 
-let enrichWithDeploymentInfo = function (healthChecks) {
-    return Promise.all(
-        healthChecks.map(
-            check => {
-                check['deploying'] = 0; // TODO: use circle ci api
-                return check;
-            }
-        )
-    )
-};
-
-let enrichWithSevInfo = function (healthChecks) {
-    return Promise.all(
-        healthChecks.map(
-            check => {
-                check['sev'] = getSevState(check);
-                check['sev'] = 2;
-                return check;
-            }
-        )
-    )
-};
-
-let filterBySev = function (healthChecks) {
-    return healthChecks.filter(it => it['sev'] > 0);
-};
-
-let createHealthIssue = function (check) {
-    let request = {
-        u_short_descr: createHealthIssueSubject(check),
-        u_caller_id: 'TUBBEST1',    // Whos ocnet-id should be used?
-        u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
-        //u_service: 'iPost Sweden',  // service needed?
-        u_priority: check['sev'],
-        u_assignment_group: 'OC CS GLOB Service Desk AM',
-        u_det_descr: createHealthIssueBody(check),
-        u_customer_id: 'OpusCapita' // TODO: what id are we using here?
+const validateCustomRequest = function (request) {
+    const mandatoryFields = ['shortDesc', 'longDesc', 'prio', 'customer', 'service', 'assignmentgroup'];
+    const assignmentGroupMapping = {
+        '1': 'OC CS GLOB Service Desk AM',
+        '2': 'OC CS GLOB Service Desk'
     };
-    return sendServiceNowRequest(request);
+    const result = {};
+    let errors = mandatoryFields.filter(field => Object.keys(request).indexOf(field) === -1);
+
+    // prio
+    if (!request['prio'] || !['1', '2', '3'].includes(request['prio']))
+        errors.push('prio');
+    else
+        result['u_priority'] = request['prio'];
+
+    // assignmentgroup
+    if (!request['assignmentgroup'] || !assignmentGroupMapping[request['assignmentgroup']])
+        errors.push('assignmentgroup');
+    else
+        result['u_assignment_group'] = assignmentGroupMapping[request['assignmentgroup']];
+
+    // throw if invalid input
+    if (errors.length > 0) {
+        errors = errors.map(error => `field ${error} is not valid: ${request[error]}`);
+        throw new Error(JSON.stringify(errors));
+    }
+
+    result['u_short_descr'] = request.shortDesc;
+    result['u_det_descr'] = request.longDesc;
+    result['u_service'] = request.service;
+    // TODO: caller_id should be technical account
+    result['u_caller_id'] = 'TUBBEST1';
+    result['u_error_type'] = "\\OCSEFTP01\prod\Kundin\ssrca";   // incident
+
+    log.info(`Translated custom-request: ${JSON.stringify(result)}`);
+    return result;
 };
 
-let createHealthIssueSubject = function (serviceData) {
-    return helper.renderTemplate(`${__dirname}/templates/health_subject.njk`, serviceData);
+module.exports.doInsert = function (request) {
+    return sendServiceNowRequest(request)
 };
 
-let createHealthIssueBody = function (serviceData) {
-    serviceData['raw'] = JSON.stringify(serviceData['raw']);
-    return helper.renderTemplate(`${__dirname}/templates/health_body.njk`, serviceData);
-};
-
-let sendServiceNowRequest = function (request) {
+const sendServiceNowRequest = function (request) {
     return getSoapCredentials()
         .then(cred => createSoapClient(cred[0], cred[1], cred[2]))
-        .then(client => doServiceNowInsert(client, request))
+        .then(client => doServiceNowInsert(client, request));
 };
 
-let getSevState = function (serviceData) {
-    let sevScript;
-    if (fs.existsSync(`${__dirname}/${serviceData.serviceName}.js`))
-        sevScript = require(`${__dirname}/healthrules/${serviceData.serviceName}.js`);
-    else
-        sevScript = require(`${__dirname}/healthrules/default.js`);
-    if (!sevScript) {
-        log.error('no health-rule-script could be loaded.');
-        return -1;
-    }
-    return sevScript.exec(serviceData);
-};
-
-let getServiceHealth = function () {
-    return getServiceList()
-        .then(services => Object.keys(services))
-        .then(serviceNames =>
-            Promise.all(
-                serviceNames.map((service) =>
-                    config.consul.health.service({service: service})
-                )
-            )
-        );
-};
-
-const getServiceList = function () {
-    return config.consul.catalog.services()
-        .catch(error => {
-            log.error(error);
-            let escalation = new Escalation('Could not get services from consul', error);
-            createEscalationIssue(escalation);
-            return [];
-        })
-};
-
-let createSoapClient = function (user, password, uri) {
+const createSoapClient = function (user, password, uri) {
     let auth = "Basic " + new Buffer(`${user}:${password}`).toString("base64");
     return new Promise((resolve, reject) => {
         soap.createClient(uri, {wsdl_headers: {Authorization: auth}}, (wsdlError, client) => {
@@ -171,25 +95,24 @@ let createSoapClient = function (user, password, uri) {
     })
 };
 
-let doServiceNowInsert = function (client, request) {
+const doServiceNowInsert = function (client, request) {
     return new Promise((resolve, reject) => {
         client.insert(request, (soapError, soapResponse) => {
             if (soapError) {
                 return reject(soapError)
             } else {
-                log.info(soapResponse);
                 return resolve(soapResponse)
             }
         });
-    })
+    });
 };
 
-let getSoapCredentials = function () {
+const getSoapCredentials = function () {
     return config.getProperty(['servicenow-api-user', 'servicenow-api-password', 'servicenow-api-uri'])
         .catch(error => {
             log.error(error);
             if (cachedCredentials) {
-                log.info('taking soap credentials from memory!');
+                log.info('taking soap credentials from memory');
                 return cachedCredentials;
             }
         })
@@ -199,34 +122,6 @@ let getSoapCredentials = function () {
                 cachedCredentials = credentials;
             }
             return credentials
-        })
+        });
 };
 
-let createEscalationIssue = function (escalation) {
-    log.info("creating escalation issue!");
-    let request = {
-        u_short_descr: createEscalationIssueSubject(escalation),
-        u_caller_id: 'TUBBEST1',    // Whos ocnet-id should be used?
-        u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
-        //u_service: 'iPost Sweden',  // service needed?
-        u_priority: 1,
-        u_det_descr: createEscalationIssueBody(escalation),
-        u_customer_id: 'OpusCapita' // TODO: what id are we using here?
-    };
-    sendServiceNowRequest(request);
-};
-
-let createEscalationIssueSubject = function (escalation) {
-    return helper.renderTemplate(`${__dirname}/templates/escalation_subject.njk`, escalation);
-};
-
-let createEscalationIssueBody = function (escalation) {
-    return helper.renderTemplate(`${__dirname}/templates/escalation_body.njk`, escalation);
-};
-
-class Escalation {
-    constructor(reason, error) {
-        this.reason = reason;
-        this.error = error;
-    }
-}
