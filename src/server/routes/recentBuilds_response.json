@@ -1,0 +1,3596 @@
+[
+  {
+    "compare": "https://github.com/OpusCapita/onboarding/compare/19a6050935ab...e805fe6e2bb1",
+    "previous_successful_build": {
+      "build_num": 1636,
+      "status": "success",
+      "build_time_millis": 476410
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-08T18:24:36+02:00",
+    "body": "",
+    "usage_queued_at": "2017-10-08T16:20:41.744Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "onboarding",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/onboarding/1639",
+    "parallel": 1,
+    "failed": false,
+    "branch": "feature/template-selection",
+    "username": "OpusCapita",
+    "author_date": "2017-10-08T18:24:36+02:00",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "kwierchris",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/25478114?v=4",
+      "name": "Christian Drengenberg",
+      "vcs_type": "github",
+      "id": 25478114
+    },
+    "vcs_revision": "e805fe6e2bb12628087ef9699008c23c7fdd1e9e",
+    "vcs_tag": null,
+    "build_num": 1639,
+    "infrastructure_fail": false,
+    "committer_email": "ChristianDrengenberg@googlemail.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 1638,
+      "status": "canceled",
+      "build_time_millis": 22123
+    },
+    "status": "success",
+    "committer_name": "Christian Drengenberg",
+    "retries": null,
+    "subject": "Should now work in IE11.",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-08T16:34:30.199Z",
+    "ssh_disabled": true,
+    "build_time_millis": 582156,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [
+      {
+        "type": "error",
+        "message": "Slack notification failed: No active hooks"
+      }
+    ],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-08T16:24:48.043Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-08T18:24:36+02:00",
+        "body": "",
+        "branch": "template-selection",
+        "author_date": "2017-10-08T18:24:36+02:00",
+        "committer_email": "ChristianDrengenberg@googlemail.com",
+        "commit": "e805fe6e2bb12628087ef9699008c23c7fdd1e9e",
+        "committer_login": "kwierchris",
+        "committer_name": "Christian Drengenberg",
+        "subject": "Should now work in IE11.",
+        "commit_url": "https://github.com/OpusCapita/onboarding/commit/e805fe6e2bb12628087ef9699008c23c7fdd1e9e",
+        "author_login": "kwierchris",
+        "author_name": "Christian Drengenberg",
+        "author_email": "ChristianDrengenberg@googlemail.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/onboarding",
+    "author_name": "Christian Drengenberg",
+    "node": null,
+    "queued_at": "2017-10-08T16:24:45.901Z",
+    "canceled": false,
+    "author_email": "ChristianDrengenberg@googlemail.com"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/onboarding/compare/e9a936e77c47...19a6050935ab",
+    "previous_successful_build": {
+      "build_num": 1636,
+      "status": "success",
+      "build_time_millis": 476410
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T17:59:27+02:00",
+    "body": "",
+    "usage_queued_at": "2017-10-06T16:00:03.239Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "onboarding",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/onboarding/1638",
+    "parallel": 1,
+    "failed": false,
+    "branch": "feature/template-selection",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T17:59:27+02:00",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "kwierchris",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/25478114?v=4",
+      "name": "Christian Drengenberg",
+      "vcs_type": "github",
+      "id": 25478114
+    },
+    "vcs_revision": "19a6050935abc087cb349cf386487a93b0f54d84",
+    "vcs_tag": null,
+    "build_num": 1638,
+    "infrastructure_fail": false,
+    "committer_email": "ChristianDrengenberg@googlemail.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 1637,
+      "status": "canceled",
+      "build_time_millis": 1461
+    },
+    "status": "canceled",
+    "committer_name": "Christian Drengenberg",
+    "retries": null,
+    "subject": "IE11 Proxy",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T15:59:57.552Z",
+    "ssh_disabled": true,
+    "build_time_millis": 22123,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "executor": "docker",
+          "build_agent": "0.0.4272-63d7ce9"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T15:59:35.429Z",
+    "canceler": {
+      "avatar_url": "https://avatars2.githubusercontent.com/u/25478114?v=4",
+      "external_id": 25478114,
+      "id": 25478114,
+      "name": "Christian Drengenberg",
+      "user?": true,
+      "domain": "github.com",
+      "type": "github",
+      "authorized?": true,
+      "login": "kwierchris"
+    },
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-06T17:59:27+02:00",
+        "body": "",
+        "branch": "template-selection",
+        "author_date": "2017-10-06T17:59:27+02:00",
+        "committer_email": "ChristianDrengenberg@googlemail.com",
+        "commit": "19a6050935abc087cb349cf386487a93b0f54d84",
+        "committer_login": "kwierchris",
+        "committer_name": "Christian Drengenberg",
+        "subject": "IE11 Proxy",
+        "commit_url": "https://github.com/OpusCapita/onboarding/commit/19a6050935abc087cb349cf386487a93b0f54d84",
+        "author_login": "kwierchris",
+        "author_name": "Christian Drengenberg",
+        "author_email": "ChristianDrengenberg@googlemail.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "canceled",
+    "vcs_url": "https://github.com/OpusCapita/onboarding",
+    "author_name": "Christian Drengenberg",
+    "node": null,
+    "queued_at": "2017-10-06T15:59:31.885Z",
+    "canceled": true,
+    "author_email": "ChristianDrengenberg@googlemail.com"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/onboarding/compare/0ae35d20ec25...e9a936e77c47",
+    "previous_successful_build": {
+      "build_num": 1636,
+      "status": "success",
+      "build_time_millis": 476410
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T17:39:25+02:00",
+    "body": "",
+    "usage_queued_at": "2017-10-06T15:38:32.527Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "onboarding",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/onboarding/1637",
+    "parallel": 1,
+    "failed": false,
+    "branch": "feature/template-selection",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T17:39:25+02:00",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "kwierchris",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/25478114?v=4",
+      "name": "Christian Drengenberg",
+      "vcs_type": "github",
+      "id": 25478114
+    },
+    "vcs_revision": "e9a936e77c4791538475282021c67efbd6029ccb",
+    "vcs_tag": null,
+    "build_num": 1637,
+    "infrastructure_fail": false,
+    "committer_email": "ChristianDrengenberg@googlemail.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 1636,
+      "status": "success",
+      "build_time_millis": 476410
+    },
+    "status": "canceled",
+    "committer_name": "Christian Drengenberg",
+    "retries": null,
+    "subject": "Latest status.",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T15:39:34.345Z",
+    "ssh_disabled": true,
+    "build_time_millis": 1461,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T15:39:32.884Z",
+    "canceler": {
+      "avatar_url": "https://avatars2.githubusercontent.com/u/25478114?v=4",
+      "external_id": 25478114,
+      "id": 25478114,
+      "name": "Christian Drengenberg",
+      "user?": true,
+      "domain": "github.com",
+      "type": "github",
+      "authorized?": true,
+      "login": "kwierchris"
+    },
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-06T17:39:25+02:00",
+        "body": "",
+        "branch": "template-selection",
+        "author_date": "2017-10-06T17:39:25+02:00",
+        "committer_email": "ChristianDrengenberg@googlemail.com",
+        "commit": "e9a936e77c4791538475282021c67efbd6029ccb",
+        "committer_login": "kwierchris",
+        "committer_name": "Christian Drengenberg",
+        "subject": "Latest status.",
+        "commit_url": "https://github.com/OpusCapita/onboarding/commit/e9a936e77c4791538475282021c67efbd6029ccb",
+        "author_login": "kwierchris",
+        "author_name": "Christian Drengenberg",
+        "author_email": "ChristianDrengenberg@googlemail.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "canceled",
+    "vcs_url": "https://github.com/OpusCapita/onboarding",
+    "author_name": "Christian Drengenberg",
+    "node": null,
+    "queued_at": "2017-10-06T15:39:29.758Z",
+    "canceled": true,
+    "author_email": "ChristianDrengenberg@googlemail.com"
+  },
+  {
+    "compare": null,
+    "previous_successful_build": {
+      "build_num": 689,
+      "status": "success",
+      "build_time_millis": 563159
+    },
+    "build_parameters": {
+      "CIRCLE_JOB": "copy_to_env",
+      "FROM_ENV": "prod",
+      "TO_ENV": "stage"
+    },
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-05T13:32:57Z",
+    "body": "",
+    "usage_queued_at": "2017-10-06T15:18:29.676Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "bnp",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/bnp/691",
+    "parallel": 1,
+    "failed": false,
+    "branch": "develop",
+    "username": "OpusCapita",
+    "author_date": "2017-10-05T13:32:57Z",
+    "why": "api",
+    "user": {
+      "is_user": true,
+      "login": "gr4per",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/22681804?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 22681804
+    },
+    "vcs_revision": "201f52d2136ba7680da797adc8a741a57e4b8e8a",
+    "vcs_tag": null,
+    "build_num": 691,
+    "infrastructure_fail": false,
+    "committer_email": "lekealemasong@yahoo.de",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 690,
+      "status": "failed",
+      "build_time_millis": 213706
+    },
+    "status": "fixed",
+    "committer_name": "Lekealem Asong",
+    "retries": null,
+    "subject": "Update favicon",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T15:22:23.408Z",
+    "ssh_disabled": true,
+    "build_time_millis": 96981,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T15:20:46.427Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-05T13:32:57Z",
+        "body": "",
+        "author_date": "2017-10-05T13:32:57Z",
+        "committer_email": "lekealemasong@yahoo.de",
+        "commit": "201f52d2136ba7680da797adc8a741a57e4b8e8a",
+        "committer_login": "lasong",
+        "committer_name": "Lekealem Asong",
+        "subject": "Update favicon",
+        "commit_url": "https://github.com/OpusCapita/bnp/commit/201f52d2136ba7680da797adc8a741a57e4b8e8a",
+        "author_login": "lasong",
+        "author_name": "Lekealem Asong",
+        "author_email": "lekealemasong@yahoo.de"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/bnp",
+    "author_name": "Lekealem Asong",
+    "node": null,
+    "queued_at": "2017-10-06T15:20:44.077Z",
+    "canceled": false,
+    "author_email": "lekealemasong@yahoo.de"
+  },
+  {
+    "compare": null,
+    "previous_successful_build": {
+      "build_num": 692,
+      "status": "success",
+      "build_time_millis": 501294
+    },
+    "build_parameters": {
+      "CIRCLE_JOB": "copy_to_env",
+      "FROM_ENV": "prod",
+      "TO_ENV": "stage"
+    },
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-09-27T15:07:18Z",
+    "body": "",
+    "usage_queued_at": "2017-10-06T15:16:30.270Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "einvoice-send",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/einvoice-send/698",
+    "parallel": 1,
+    "failed": false,
+    "branch": "develop",
+    "username": "OpusCapita",
+    "author_date": "2017-09-27T15:07:18Z",
+    "why": "api",
+    "user": {
+      "is_user": true,
+      "login": "gr4per",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/22681804?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 22681804
+    },
+    "vcs_revision": "8a7df88f1a8b0a711e771f2b66a819563eacf899",
+    "vcs_tag": null,
+    "build_num": 698,
+    "infrastructure_fail": false,
+    "committer_email": "norbert.czeranka@opuscapita.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 692,
+      "status": "success",
+      "build_time_millis": 501294
+    },
+    "status": "success",
+    "committer_name": "nczeranka",
+    "retries": null,
+    "subject": "adjusted texts for eInvoice page 3",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T15:19:16.768Z",
+    "ssh_disabled": true,
+    "build_time_millis": 152773,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T15:16:43.995Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-09-27T15:07:18Z",
+        "body": "",
+        "author_date": "2017-09-27T15:07:18Z",
+        "committer_email": "norbert.czeranka@opuscapita.com",
+        "commit": "8a7df88f1a8b0a711e771f2b66a819563eacf899",
+        "committer_login": "nczeranka",
+        "committer_name": "nczeranka",
+        "subject": "adjusted texts for eInvoice page 3",
+        "commit_url": "https://github.com/OpusCapita/einvoice-send/commit/8a7df88f1a8b0a711e771f2b66a819563eacf899",
+        "author_login": "nczeranka",
+        "author_name": "nczeranka",
+        "author_email": "norbert.czeranka@opuscapita.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/einvoice-send",
+    "author_name": "nczeranka",
+    "node": null,
+    "queued_at": "2017-10-06T15:16:41.270Z",
+    "canceled": false,
+    "author_email": "norbert.czeranka@opuscapita.com"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/onboarding/compare/c23ffcf1c20b...0ae35d20ec25",
+    "previous_successful_build": {
+      "build_num": 1627,
+      "status": "success",
+      "build_time_millis": 558768
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T17:12:15+02:00",
+    "body": "",
+    "usage_queued_at": "2017-10-06T15:15:59.448Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "onboarding",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/onboarding/1636",
+    "parallel": 1,
+    "failed": false,
+    "branch": "feature/template-selection",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T17:12:15+02:00",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "kwierchris",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/25478114?v=4",
+      "name": "Christian Drengenberg",
+      "vcs_type": "github",
+      "id": 25478114
+    },
+    "vcs_revision": "0ae35d20ec256275b0cea1eaa0e410739c4453f2",
+    "vcs_tag": null,
+    "build_num": 1636,
+    "infrastructure_fail": false,
+    "committer_email": "ChristianDrengenberg@googlemail.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 1634,
+      "status": "success",
+      "build_time_millis": 558719
+    },
+    "status": "success",
+    "committer_name": "Christian Drengenberg",
+    "retries": null,
+    "subject": "Latest status",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T15:20:20.014Z",
+    "ssh_disabled": true,
+    "build_time_millis": 476410,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "executor": "docker",
+          "build_agent": "0.0.4272-63d7ce9"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [
+      {
+        "type": "error",
+        "message": "Slack notification failed: No active hooks"
+      }
+    ],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T15:12:23.604Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-06T17:12:15+02:00",
+        "body": "",
+        "branch": "template-selection",
+        "author_date": "2017-10-06T17:12:15+02:00",
+        "committer_email": "ChristianDrengenberg@googlemail.com",
+        "commit": "0ae35d20ec256275b0cea1eaa0e410739c4453f2",
+        "committer_login": "kwierchris",
+        "committer_name": "Christian Drengenberg",
+        "subject": "Latest status",
+        "commit_url": "https://github.com/OpusCapita/onboarding/commit/0ae35d20ec256275b0cea1eaa0e410739c4453f2",
+        "author_login": "kwierchris",
+        "author_name": "Christian Drengenberg",
+        "author_email": "ChristianDrengenberg@googlemail.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/onboarding",
+    "author_name": "Christian Drengenberg",
+    "node": null,
+    "queued_at": "2017-10-06T15:12:20.697Z",
+    "canceled": false,
+    "author_email": "ChristianDrengenberg@googlemail.com"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/onboarding/compare/80ce394ad35a...c23ffcf1c20b",
+    "previous_successful_build": {
+      "build_num": 1627,
+      "status": "success",
+      "build_time_millis": 558768
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T17:10:40+02:00",
+    "body": "",
+    "usage_queued_at": "2017-10-06T15:14:24.994Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "onboarding",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/onboarding/1634",
+    "parallel": 1,
+    "failed": false,
+    "branch": "feature/template-selection",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T17:10:40+02:00",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "kwierchris",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/25478114?v=4",
+      "name": "Christian Drengenberg",
+      "vcs_type": "github",
+      "id": 25478114
+    },
+    "vcs_revision": "c23ffcf1c20b571095f268cc51098c425a7404b7",
+    "vcs_tag": null,
+    "build_num": 1634,
+    "infrastructure_fail": false,
+    "committer_email": "ChristianDrengenberg@googlemail.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 1633,
+      "status": "canceled",
+      "build_time_millis": 1395
+    },
+    "status": "success",
+    "committer_name": "Christian Drengenberg",
+    "retries": null,
+    "subject": "Latest status",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T15:20:07.410Z",
+    "ssh_disabled": true,
+    "build_time_millis": 558719,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [
+      {
+        "type": "error",
+        "message": "Slack notification failed: No active hooks"
+      }
+    ],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T15:10:48.691Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-06T17:10:40+02:00",
+        "body": "",
+        "branch": "template-selection",
+        "author_date": "2017-10-06T17:10:40+02:00",
+        "committer_email": "ChristianDrengenberg@googlemail.com",
+        "commit": "c23ffcf1c20b571095f268cc51098c425a7404b7",
+        "committer_login": "kwierchris",
+        "committer_name": "Christian Drengenberg",
+        "subject": "Latest status",
+        "commit_url": "https://github.com/OpusCapita/onboarding/commit/c23ffcf1c20b571095f268cc51098c425a7404b7",
+        "author_login": "kwierchris",
+        "author_name": "Christian Drengenberg",
+        "author_email": "ChristianDrengenberg@googlemail.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/onboarding",
+    "author_name": "Christian Drengenberg",
+    "node": null,
+    "queued_at": "2017-10-06T15:10:46.259Z",
+    "canceled": false,
+    "author_email": "ChristianDrengenberg@googlemail.com"
+  },
+  {
+    "compare": null,
+    "previous_successful_build": {
+      "build_num": 143,
+      "status": "success",
+      "build_time_millis": 109268
+    },
+    "build_parameters": {
+      "CIRCLE_JOB": "copy_to_env",
+      "FROM_ENV": "prod",
+      "TO_ENV": "stage"
+    },
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-09-21T14:20:45Z",
+    "body": "",
+    "usage_queued_at": "2017-10-06T15:12:02.771Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "notification",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/notification/144",
+    "parallel": 1,
+    "failed": false,
+    "branch": "develop",
+    "username": "OpusCapita",
+    "author_date": "2017-09-21T14:20:45Z",
+    "why": "api",
+    "user": {
+      "is_user": true,
+      "login": "gr4per",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/22681804?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 22681804
+    },
+    "vcs_revision": "8f49dfa8e70c0f8ca1ee01331f94fc05a04f2a65",
+    "vcs_tag": null,
+    "build_num": 144,
+    "infrastructure_fail": false,
+    "committer_email": "arne.graeper@opuscapita.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 143,
+      "status": "success",
+      "build_time_millis": 109268
+    },
+    "status": "success",
+    "committer_name": "gr4per",
+    "retries": null,
+    "subject": "updating circle config [ci skip]",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T15:16:35.459Z",
+    "ssh_disabled": true,
+    "build_time_millis": 111037,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T15:14:44.422Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-09-21T14:20:45Z",
+        "body": "",
+        "author_date": "2017-09-21T14:20:45Z",
+        "committer_email": "arne.graeper@opuscapita.com",
+        "commit": "8f49dfa8e70c0f8ca1ee01331f94fc05a04f2a65",
+        "committer_login": "gr4per",
+        "committer_name": "gr4per",
+        "subject": "updating circle config [ci skip]",
+        "commit_url": "https://github.com/OpusCapita/notification/commit/8f49dfa8e70c0f8ca1ee01331f94fc05a04f2a65",
+        "author_login": "gr4per",
+        "author_name": "gr4per",
+        "author_email": "arne.graeper@opuscapita.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/notification",
+    "author_name": "gr4per",
+    "node": null,
+    "queued_at": "2017-10-06T15:14:41.408Z",
+    "canceled": false,
+    "author_email": "arne.graeper@opuscapita.com"
+  },
+  {
+    "compare": null,
+    "previous_successful_build": {
+      "build_num": 168,
+      "status": "success",
+      "build_time_millis": 412085
+    },
+    "build_parameters": {
+      "CIRCLE_JOB": "copy_to_env",
+      "FROM_ENV": "prod",
+      "TO_ENV": "stage"
+    },
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-04T12:10:44Z",
+    "body": "43/Localized two new strings",
+    "usage_queued_at": "2017-10-06T15:08:55.512Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "posting",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/posting/169",
+    "parallel": 1,
+    "failed": false,
+    "branch": "develop",
+    "username": "OpusCapita",
+    "author_date": "2017-10-04T12:10:44Z",
+    "why": "api",
+    "user": {
+      "is_user": true,
+      "login": "gr4per",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/22681804?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 22681804
+    },
+    "vcs_revision": "0dbdec4c881ff2dba0bf847768065e4f438de78f",
+    "vcs_tag": null,
+    "build_num": 169,
+    "infrastructure_fail": false,
+    "committer_email": "noreply@github.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 168,
+      "status": "success",
+      "build_time_millis": 412085
+    },
+    "status": "success",
+    "committer_name": "GitHub",
+    "retries": null,
+    "subject": "Merge pull request #51 from OpusCapita/Bugfix/43",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T15:14:22.980Z",
+    "ssh_disabled": true,
+    "build_time_millis": 82223,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "executor": "docker",
+          "build_agent": "0.0.4272-63d7ce9"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T15:13:00.757Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-04T12:10:44Z",
+        "body": "43/Localized two new strings",
+        "author_date": "2017-10-04T12:10:44Z",
+        "committer_email": "noreply@github.com",
+        "commit": "0dbdec4c881ff2dba0bf847768065e4f438de78f",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Merge pull request #51 from OpusCapita/Bugfix/43",
+        "commit_url": "https://github.com/OpusCapita/posting/commit/0dbdec4c881ff2dba0bf847768065e4f438de78f",
+        "author_login": "Aappo",
+        "author_name": "Aappo",
+        "author_email": "aappo.salo@opuscapita.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/posting",
+    "author_name": "Aappo",
+    "node": null,
+    "queued_at": "2017-10-06T15:12:57.061Z",
+    "canceled": false,
+    "author_email": "aappo.salo@opuscapita.com"
+  },
+  {
+    "compare": null,
+    "previous_successful_build": {
+      "build_num": 240,
+      "status": "success",
+      "build_time_millis": 153678
+    },
+    "build_parameters": {
+      "CIRCLE_JOB": "copy_to_env",
+      "FROM_ENV": "prod",
+      "TO_ENV": "stage"
+    },
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-04T18:45:36Z",
+    "body": "",
+    "usage_queued_at": "2017-10-06T15:08:22.845Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "blob",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/blob/241",
+    "parallel": 1,
+    "failed": false,
+    "branch": "develop",
+    "username": "OpusCapita",
+    "author_date": "2017-10-04T18:45:36Z",
+    "why": "api",
+    "user": {
+      "is_user": true,
+      "login": "gr4per",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/22681804?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 22681804
+    },
+    "vcs_revision": "bffb4568e6da97627fc6bd02cbc93128176d888d",
+    "vcs_tag": null,
+    "build_num": 241,
+    "infrastructure_fail": false,
+    "committer_email": "christiandrengenberg@googlemail.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 240,
+      "status": "success",
+      "build_time_millis": 153678
+    },
+    "status": "success",
+    "committer_name": "Christian Drengenberg",
+    "retries": null,
+    "subject": "Added inline parameter fon sendFile.",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T15:05:42.378Z",
+    "ssh_disabled": true,
+    "build_time_millis": 90923,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T15:04:11.455Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-04T18:45:36Z",
+        "body": "",
+        "author_date": "2017-10-04T18:45:36Z",
+        "committer_email": "christiandrengenberg@googlemail.com",
+        "commit": "bffb4568e6da97627fc6bd02cbc93128176d888d",
+        "committer_login": "kwierchris",
+        "committer_name": "Christian Drengenberg",
+        "subject": "Added inline parameter fon sendFile.",
+        "commit_url": "https://github.com/OpusCapita/blob/commit/bffb4568e6da97627fc6bd02cbc93128176d888d",
+        "author_login": "kwierchris",
+        "author_name": "Christian Drengenberg",
+        "author_email": "christiandrengenberg@googlemail.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/blob",
+    "author_name": "Christian Drengenberg",
+    "node": null,
+    "queued_at": "2017-10-06T15:04:09.343Z",
+    "canceled": false,
+    "author_email": "christiandrengenberg@googlemail.com"
+  },
+  {
+    "compare": null,
+    "previous_successful_build": {
+      "build_num": 915,
+      "status": "success",
+      "build_time_millis": 427523
+    },
+    "build_parameters": {
+      "CIRCLE_JOB": "copy_to_env",
+      "FROM_ENV": "prod",
+      "TO_ENV": "stage"
+    },
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-09-29T13:59:04Z",
+    "body": "",
+    "usage_queued_at": "2017-10-06T15:07:55.906Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "supplier",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/supplier/922",
+    "parallel": 1,
+    "failed": false,
+    "branch": "develop",
+    "username": "OpusCapita",
+    "author_date": "2017-09-29T13:59:04Z",
+    "why": "api",
+    "user": {
+      "is_user": true,
+      "login": "gr4per",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/22681804?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 22681804
+    },
+    "vcs_revision": "965521b9025405fa6b6e04d3a721a36aaaeb5b3f",
+    "vcs_tag": null,
+    "build_num": 922,
+    "infrastructure_fail": false,
+    "committer_email": "noreply@github.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 919,
+      "status": "canceled",
+      "build_time_millis": 3818
+    },
+    "status": "success",
+    "committer_name": "GitHub",
+    "retries": null,
+    "subject": "Update SupplierUserManagement.md",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T15:07:32.466Z",
+    "ssh_disabled": true,
+    "build_time_millis": 101766,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "executor": "docker",
+          "build_agent": "0.0.4272-63d7ce9"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T15:05:50.700Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-09-29T13:59:04Z",
+        "body": "",
+        "author_date": "2017-09-29T13:59:04Z",
+        "committer_email": "noreply@github.com",
+        "commit": "965521b9025405fa6b6e04d3a721a36aaaeb5b3f",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Update SupplierUserManagement.md",
+        "commit_url": "https://github.com/OpusCapita/supplier/commit/965521b9025405fa6b6e04d3a721a36aaaeb5b3f",
+        "author_login": "lasong",
+        "author_name": "Lekealem Asong",
+        "author_email": "lekealemasong@yahoo.de"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/supplier",
+    "author_name": "Lekealem Asong",
+    "node": null,
+    "queued_at": "2017-10-06T15:05:46.769Z",
+    "canceled": false,
+    "author_email": "lekealemasong@yahoo.de"
+  },
+  {
+    "compare": null,
+    "previous_successful_build": {
+      "build_num": 243,
+      "status": "success",
+      "build_time_millis": 183749
+    },
+    "build_parameters": {
+      "CIRCLE_JOB": "copy_to_env",
+      "FROM_ENV": "prod",
+      "TO_ENV": "stage"
+    },
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-04T09:23:04Z",
+    "body": "",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "customer",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/customer/246",
+    "parallel": 1,
+    "failed": null,
+    "branch": "develop",
+    "username": "OpusCapita",
+    "author_date": "2017-10-04T09:23:04Z",
+    "why": "api",
+    "user": {
+      "is_user": true,
+      "login": "gr4per",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/22681804?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 22681804
+    },
+    "vcs_revision": "029cbed8e896739f23adc64e7f38f03ea5db1b6f",
+    "vcs_tag": null,
+    "build_num": 246,
+    "infrastructure_fail": false,
+    "committer_email": "arne.graeper@opuscapita.com",
+    "previous": {
+      "build_num": 245,
+      "status": "not_run",
+      "build_time_millis": 0
+    },
+    "status": "not_run",
+    "committer_name": "gr4per",
+    "retries": [
+      247
+    ],
+    "subject": "1.0.12 [ci skip]",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": "ci-skip",
+    "lifecycle": "not_run",
+    "no_dependency_cache": false,
+    "stop_time": null,
+    "ssh_disabled": true,
+    "build_time_millis": null,
+    "picard": null,
+    "circle_yml": null,
+    "messages": [
+      {
+        "type": "warning",
+        "message": "Your build was not run - reason code (:ci-skip)."
+      }
+    ],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": null,
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-04T09:23:04Z",
+        "body": "",
+        "author_date": "2017-10-04T09:23:04Z",
+        "committer_email": "arne.graeper@opuscapita.com",
+        "commit": "029cbed8e896739f23adc64e7f38f03ea5db1b6f",
+        "committer_login": "gr4per",
+        "committer_name": "gr4per",
+        "subject": "1.0.12 [ci skip]",
+        "commit_url": "https://github.com/OpusCapita/customer/commit/029cbed8e896739f23adc64e7f38f03ea5db1b6f",
+        "author_login": "gr4per",
+        "author_name": "gr4per",
+        "author_email": "arne.graeper@opuscapita.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": null,
+    "vcs_url": "https://github.com/OpusCapita/customer",
+    "author_name": "gr4per",
+    "node": null,
+    "canceled": false,
+    "author_email": "arne.graeper@opuscapita.com"
+  },
+  {
+    "compare": null,
+    "previous_successful_build": {
+      "build_num": 849,
+      "status": "success",
+      "build_time_millis": 995636
+    },
+    "build_parameters": {
+      "CIRCLE_JOB": "copy_to_env",
+      "FROM_ENV": "prod",
+      "TO_ENV": "stage"
+    },
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T12:48:51Z",
+    "body": "",
+    "usage_queued_at": "2017-10-06T15:06:57.646Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "invoice",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/invoice/850",
+    "parallel": 1,
+    "failed": false,
+    "branch": "develop",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T12:48:51Z",
+    "why": "api",
+    "user": {
+      "is_user": true,
+      "login": "gr4per",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/22681804?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 22681804
+    },
+    "vcs_revision": "77e5f00349c73ffd44f103e9b682fd7dfd037591",
+    "vcs_tag": null,
+    "build_num": 850,
+    "infrastructure_fail": false,
+    "committer_email": "dzhitomirsky-sc@users.noreply.github.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 849,
+      "status": "success",
+      "build_time_millis": 995636
+    },
+    "status": "success",
+    "committer_name": "Daniel Zhitomirsky",
+    "retries": null,
+    "subject": "#214 Added migration files. (#216)",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T15:10:57.819Z",
+    "ssh_disabled": true,
+    "build_time_millis": 95929,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "executor": "docker",
+          "build_agent": "0.0.4272-63d7ce9"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Run tests with coverage and post it to coverrals.io\n          command: |\n            mv .dockerignore .dockerignore_tmp_disabled\n            docker-compose -f docker-compose.unit.yml up\n            mkdir junit\n            docker cp $(docker ps -l -q):/home/node/invoice/test-results.xml ./junit/test-results.xml\n            mv .dockerignore_tmp_disabled .dockerignore\n            exit $(docker ps -l -q | xargs docker inspect -f '{{ .State.ExitCode }}')\n      - store_artifacts:\n          path: ./junit/test-results.xml\n          prefix: tests\n      - store_test_results:\n          path: ./junit\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T15:09:21.890Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-06T12:48:51Z",
+        "body": "",
+        "author_date": "2017-10-06T12:48:51Z",
+        "committer_email": "dzhitomirsky-sc@users.noreply.github.com",
+        "commit": "77e5f00349c73ffd44f103e9b682fd7dfd037591",
+        "committer_login": "dzhitomirsky-sc",
+        "committer_name": "Daniel Zhitomirsky",
+        "subject": "#214 Added migration files. (#216)",
+        "commit_url": "https://github.com/OpusCapita/invoice/commit/77e5f00349c73ffd44f103e9b682fd7dfd037591",
+        "author_login": "alevchuk-sc",
+        "author_name": "Anton Levchuk",
+        "author_email": "alevchuk-sc@users.noreply.github.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/invoice",
+    "author_name": "Anton Levchuk",
+    "node": null,
+    "queued_at": "2017-10-06T15:09:19.483Z",
+    "canceled": false,
+    "author_email": "alevchuk-sc@users.noreply.github.com"
+  },
+  {
+    "compare": null,
+    "previous_successful_build": {
+      "build_num": 243,
+      "status": "success",
+      "build_time_millis": 183749
+    },
+    "build_parameters": {
+      "CIRCLE_JOB": "copy_to_env",
+      "FROM_ENV": "prod",
+      "TO_ENV": "stage"
+    },
+    "oss": true,
+    "committer_date": "2017-10-04T09:23:04Z",
+    "body": "",
+    "usage_queued_at": "2017-10-06T15:06:29.433Z",
+    "fail_reason": null,
+    "retry_of": 246,
+    "reponame": "customer",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/customer/247",
+    "parallel": 1,
+    "failed": false,
+    "branch": "develop",
+    "username": "OpusCapita",
+    "author_date": "2017-10-04T09:23:04Z",
+    "why": "retry",
+    "user": {
+      "is_user": true,
+      "login": "gr4per",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/22681804?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 22681804
+    },
+    "vcs_revision": "029cbed8e896739f23adc64e7f38f03ea5db1b6f",
+    "vcs_tag": null,
+    "build_num": 247,
+    "infrastructure_fail": false,
+    "committer_email": "arne.graeper@opuscapita.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 246,
+      "status": "not_run",
+      "build_time_millis": 0
+    },
+    "status": "success",
+    "committer_name": "gr4per",
+    "retries": null,
+    "subject": "1.0.12 [ci skip]",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T15:09:16.610Z",
+    "ssh_disabled": true,
+    "build_time_millis": 96698,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T15:07:39.912Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-04T09:23:04Z",
+        "body": "",
+        "author_date": "2017-10-04T09:23:04Z",
+        "committer_email": "arne.graeper@opuscapita.com",
+        "commit": "029cbed8e896739f23adc64e7f38f03ea5db1b6f",
+        "committer_login": "gr4per",
+        "committer_name": "gr4per",
+        "subject": "1.0.12 [ci skip]",
+        "commit_url": "https://github.com/OpusCapita/customer/commit/029cbed8e896739f23adc64e7f38f03ea5db1b6f",
+        "author_login": "gr4per",
+        "author_name": "gr4per",
+        "author_email": "arne.graeper@opuscapita.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/customer",
+    "author_name": "gr4per",
+    "node": null,
+    "queued_at": "2017-10-06T15:07:37.037Z",
+    "canceled": false,
+    "author_email": "arne.graeper@opuscapita.com"
+  },
+  {
+    "compare": null,
+    "previous_successful_build": {
+      "build_num": 1614,
+      "status": "success",
+      "build_time_millis": 588336
+    },
+    "build_parameters": {
+      "CIRCLE_JOB": "copy_to_env",
+      "FROM_ENV": "prod",
+      "TO_ENV": "stage"
+    },
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-05T13:25:42Z",
+    "body": "export fix and initial debug configuration",
+    "usage_queued_at": "2017-10-06T15:06:09.105Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "onboarding",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/onboarding/1635",
+    "parallel": 1,
+    "failed": false,
+    "branch": "develop",
+    "username": "OpusCapita",
+    "author_date": "2017-10-05T13:25:42Z",
+    "why": "api",
+    "user": {
+      "is_user": true,
+      "login": "gr4per",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/22681804?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 22681804
+    },
+    "vcs_revision": "34fe2a1950ca76941958529687e5d94235d9dbec",
+    "vcs_tag": null,
+    "build_num": 1635,
+    "infrastructure_fail": false,
+    "committer_email": "noreply@github.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 1632,
+      "status": "failed",
+      "build_time_millis": 679331
+    },
+    "status": "fixed",
+    "committer_name": "GitHub",
+    "retries": null,
+    "subject": "Merge pull request #401 from OpusCapita/bug/381",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T15:12:53.433Z",
+    "ssh_disabled": true,
+    "build_time_millis": 107985,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [
+      {
+        "type": "error",
+        "message": "Slack notification failed: No active hooks"
+      }
+    ],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T15:11:05.448Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-05T13:25:42Z",
+        "body": "export fix and initial debug configuration",
+        "author_date": "2017-10-05T13:25:42Z",
+        "committer_email": "noreply@github.com",
+        "commit": "34fe2a1950ca76941958529687e5d94235d9dbec",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Merge pull request #401 from OpusCapita/bug/381",
+        "commit_url": "https://github.com/OpusCapita/onboarding/commit/34fe2a1950ca76941958529687e5d94235d9dbec",
+        "author_login": "nczeranka",
+        "author_name": "nczeranka",
+        "author_email": "norbert.czeranka@opuscapita.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/onboarding",
+    "author_name": "nczeranka",
+    "node": null,
+    "queued_at": "2017-10-06T15:11:02.841Z",
+    "canceled": false,
+    "author_email": "norbert.czeranka@opuscapita.com"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/email/compare/52c1b95b1989...6fe14695fbc4",
+    "previous_successful_build": {
+      "build_num": 291,
+      "status": "fixed",
+      "build_time_millis": 196890
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T20:02:07+05:30",
+    "body": "updating using crypted value",
+    "usage_queued_at": "2017-10-06T14:35:29.318Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "email",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/email/294",
+    "parallel": 1,
+    "failed": false,
+    "branch": "develop",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T20:02:07+05:30",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "sureshvarman-cronj",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/20809609?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 20809609
+    },
+    "vcs_revision": "6fe14695fbc46496cb777986bb0a868f17fe6e4c",
+    "vcs_tag": null,
+    "build_num": 294,
+    "infrastructure_fail": false,
+    "committer_email": "noreply@github.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 291,
+      "status": "fixed",
+      "build_time_millis": 196890
+    },
+    "status": "success",
+    "committer_name": "GitHub",
+    "retries": null,
+    "subject": "Merge pull request #18 from OpusCapita/bug/BigInt",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T14:35:12.928Z",
+    "ssh_disabled": true,
+    "build_time_millis": 181918,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T14:32:11.010Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-06T19:44:11+05:30",
+        "body": "",
+        "branch": "develop",
+        "author_date": "2017-10-06T19:44:11+05:30",
+        "committer_email": "sureshvarman-cronj",
+        "commit": "96e01b0679a812cb30eb0b30c751eded8683f55e",
+        "committer_login": null,
+        "committer_name": "CronJ",
+        "subject": "updating using crypted value",
+        "commit_url": "https://github.com/OpusCapita/email/commit/96e01b0679a812cb30eb0b30c751eded8683f55e",
+        "author_login": null,
+        "author_name": "CronJ",
+        "author_email": "sureshvarman-cronj"
+      },
+      {
+        "committer_date": "2017-10-06T19:46:09+05:30",
+        "body": "",
+        "branch": "develop",
+        "author_date": "2017-10-06T19:46:09+05:30",
+        "committer_email": "noreply@github.com",
+        "commit": "b2aca1ab5c7ae040e6205ffc3aa0e66b61df0198",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Merge branch 'develop' into bug/BigInt",
+        "commit_url": "https://github.com/OpusCapita/email/commit/b2aca1ab5c7ae040e6205ffc3aa0e66b61df0198",
+        "author_login": "sureshvarman-cronj",
+        "author_name": "sureshvarman-cronj",
+        "author_email": "suresh.varman@cronj.com"
+      },
+      {
+        "committer_date": "2017-10-06T20:02:07+05:30",
+        "body": "updating using crypted value",
+        "branch": "develop",
+        "author_date": "2017-10-06T20:02:07+05:30",
+        "committer_email": "noreply@github.com",
+        "commit": "6fe14695fbc46496cb777986bb0a868f17fe6e4c",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Merge pull request #18 from OpusCapita/bug/BigInt",
+        "commit_url": "https://github.com/OpusCapita/email/commit/6fe14695fbc46496cb777986bb0a868f17fe6e4c",
+        "author_login": "sureshvarman-cronj",
+        "author_name": "sureshvarman-cronj",
+        "author_email": "suresh.varman@cronj.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/email",
+    "author_name": "sureshvarman-cronj",
+    "node": null,
+    "queued_at": "2017-10-06T14:32:09.079Z",
+    "canceled": false,
+    "author_email": "suresh.varman@cronj.com"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/onboarding/compare/e9b456ccec64...80ce394ad35a",
+    "previous_successful_build": {
+      "build_num": 1627,
+      "status": "success",
+      "build_time_millis": 558768
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T16:34:48+02:00",
+    "body": "",
+    "usage_queued_at": "2017-10-06T14:34:53.293Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "onboarding",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/onboarding/1633",
+    "parallel": 1,
+    "failed": false,
+    "branch": "feature/template-selection",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T16:34:48+02:00",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "kwierchris",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/25478114?v=4",
+      "name": "Christian Drengenberg",
+      "vcs_type": "github",
+      "id": 25478114
+    },
+    "vcs_revision": "80ce394ad35a9cb45a15df9c686f2b15ac94fec3",
+    "vcs_tag": null,
+    "build_num": 1633,
+    "infrastructure_fail": false,
+    "committer_email": "ChristianDrengenberg@googlemail.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 1628,
+      "status": "canceled",
+      "build_time_millis": 3820
+    },
+    "status": "canceled",
+    "committer_name": "Christian Drengenberg",
+    "retries": null,
+    "subject": "Latest status.",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T14:34:56.948Z",
+    "ssh_disabled": true,
+    "build_time_millis": 1395,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T14:34:55.553Z",
+    "canceler": {
+      "avatar_url": "https://avatars2.githubusercontent.com/u/25478114?v=4",
+      "external_id": 25478114,
+      "id": 25478114,
+      "name": "Christian Drengenberg",
+      "user?": true,
+      "domain": "github.com",
+      "type": "github",
+      "authorized?": true,
+      "login": "kwierchris"
+    },
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-06T16:34:48+02:00",
+        "body": "",
+        "branch": "template-selection",
+        "author_date": "2017-10-06T16:34:48+02:00",
+        "committer_email": "ChristianDrengenberg@googlemail.com",
+        "commit": "80ce394ad35a9cb45a15df9c686f2b15ac94fec3",
+        "committer_login": "kwierchris",
+        "committer_name": "Christian Drengenberg",
+        "subject": "Latest status.",
+        "commit_url": "https://github.com/OpusCapita/onboarding/commit/80ce394ad35a9cb45a15df9c686f2b15ac94fec3",
+        "author_login": "kwierchris",
+        "author_name": "Christian Drengenberg",
+        "author_email": "ChristianDrengenberg@googlemail.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "canceled",
+    "vcs_url": "https://github.com/OpusCapita/onboarding",
+    "author_name": "Christian Drengenberg",
+    "node": null,
+    "queued_at": "2017-10-06T14:34:53.315Z",
+    "canceled": true,
+    "author_email": "ChristianDrengenberg@googlemail.com"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/einvoice-send/compare/eb1dc8fa1375...cbc8ca255997",
+    "previous_successful_build": {
+      "build_num": 669,
+      "status": "success",
+      "build_time_millis": 440490
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T14:30:58Z",
+    "body": "",
+    "usage_queued_at": "2017-10-06T14:30:26.521Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "einvoice-send",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/einvoice-send/697",
+    "parallel": 1,
+    "failed": true,
+    "branch": "fix/52",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T14:30:58Z",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "nczeranka",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/26661092?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 26661092
+    },
+    "vcs_revision": "cbc8ca255997b9c196eb1a21c8e1554179179878",
+    "vcs_tag": null,
+    "build_num": 697,
+    "infrastructure_fail": false,
+    "committer_email": "norbert.czeranka@opuscapita.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 696,
+      "status": "failed",
+      "build_time_millis": 333308
+    },
+    "status": "failed",
+    "committer_name": "nczeranka",
+    "retries": null,
+    "subject": "Merge branch 'fix/52' of https://github.com/OpusCapita/einvoice-send into fix/52",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T14:37:28.211Z",
+    "ssh_disabled": true,
+    "build_time_millis": 291006,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T14:32:37.205Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-06T14:27:08Z",
+        "body": "",
+        "branch": "52",
+        "author_date": "2017-10-06T14:27:08Z",
+        "committer_email": "norbert.czeranka@opuscapita.com",
+        "commit": "e8fc986b1fe9013d04af48b707dbd69d7833216a",
+        "committer_login": "nczeranka",
+        "committer_name": "nczeranka",
+        "subject": "corrected dependencies",
+        "commit_url": "https://github.com/OpusCapita/einvoice-send/commit/e8fc986b1fe9013d04af48b707dbd69d7833216a",
+        "author_login": "nczeranka",
+        "author_name": "nczeranka",
+        "author_email": "norbert.czeranka@opuscapita.com"
+      },
+      {
+        "committer_date": "2017-10-06T14:30:58Z",
+        "body": "",
+        "branch": "52",
+        "author_date": "2017-10-06T14:30:58Z",
+        "committer_email": "norbert.czeranka@opuscapita.com",
+        "commit": "cbc8ca255997b9c196eb1a21c8e1554179179878",
+        "committer_login": "nczeranka",
+        "committer_name": "nczeranka",
+        "subject": "Merge branch 'fix/52' of https://github.com/OpusCapita/einvoice-send into fix/52",
+        "commit_url": "https://github.com/OpusCapita/einvoice-send/commit/cbc8ca255997b9c196eb1a21c8e1554179179878",
+        "author_login": "nczeranka",
+        "author_name": "nczeranka",
+        "author_email": "norbert.czeranka@opuscapita.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "failed",
+    "vcs_url": "https://github.com/OpusCapita/einvoice-send",
+    "author_name": "nczeranka",
+    "node": null,
+    "queued_at": "2017-10-06T14:32:33.139Z",
+    "canceled": false,
+    "author_email": "norbert.czeranka@opuscapita.com"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/supplier/compare/cc5d93a44c65...b4476bacfb77",
+    "previous_successful_build": {
+      "build_num": 920,
+      "status": "success",
+      "build_time_millis": 260144
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T16:22:27+02:00",
+    "body": "",
+    "usage_queued_at": "2017-10-06T14:18:39.553Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "supplier",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/supplier/921",
+    "parallel": 1,
+    "failed": false,
+    "branch": "feature/118-add-user-request-for-access-to-registered-supplier",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T16:22:27+02:00",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "lasong",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1188617?v=4",
+      "name": "Lekealem Asong",
+      "vcs_type": "github",
+      "id": 1188617
+    },
+    "vcs_revision": "b4476bacfb77f7a61c1984bba947b4ce73349da1",
+    "vcs_tag": null,
+    "build_num": 921,
+    "infrastructure_fail": false,
+    "committer_email": "lekealemasong@yahoo.de",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 920,
+      "status": "success",
+      "build_time_millis": 260144
+    },
+    "status": "success",
+    "committer_name": "Lekealem Asong",
+    "retries": null,
+    "subject": "Add translation",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T14:27:38.382Z",
+    "ssh_disabled": true,
+    "build_time_millis": 297855,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T14:22:40.527Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-06T16:22:27+02:00",
+        "body": "",
+        "branch": "118-add-user-request-for-access-to-registered-supplier",
+        "author_date": "2017-10-06T16:22:27+02:00",
+        "committer_email": "lekealemasong@yahoo.de",
+        "commit": "b4476bacfb77f7a61c1984bba947b4ce73349da1",
+        "committer_login": "lasong",
+        "committer_name": "Lekealem Asong",
+        "subject": "Add translation",
+        "commit_url": "https://github.com/OpusCapita/supplier/commit/b4476bacfb77f7a61c1984bba947b4ce73349da1",
+        "author_login": "lasong",
+        "author_name": "Lekealem Asong",
+        "author_email": "lekealemasong@yahoo.de"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/supplier",
+    "author_name": "Lekealem Asong",
+    "node": null,
+    "queued_at": "2017-10-06T14:22:36.703Z",
+    "canceled": false,
+    "author_email": "lekealemasong@yahoo.de"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/email/compare/96e01b0679a8...b2aca1ab5c7a",
+    "previous_successful_build": {
+      "build_num": 292,
+      "status": "success",
+      "build_time_millis": 77930
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T19:46:09+05:30",
+    "body": "",
+    "usage_queued_at": "2017-10-06T14:12:42.464Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "email",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/email/293",
+    "parallel": 1,
+    "failed": false,
+    "branch": "bug/BigInt",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T19:46:09+05:30",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "sureshvarman-cronj",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/20809609?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 20809609
+    },
+    "vcs_revision": "b2aca1ab5c7ae040e6205ffc3aa0e66b61df0198",
+    "vcs_tag": null,
+    "build_num": 293,
+    "infrastructure_fail": false,
+    "committer_email": "noreply@github.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 292,
+      "status": "success",
+      "build_time_millis": 77930
+    },
+    "status": "success",
+    "committer_name": "GitHub",
+    "retries": null,
+    "subject": "Merge branch 'develop' into bug/BigInt",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T14:17:25.350Z",
+    "ssh_disabled": true,
+    "build_time_millis": 72396,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T14:16:12.954Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-06T19:12:39+05:30",
+        "body": "Bug/big int",
+        "branch": "BigInt",
+        "author_date": "2017-10-06T19:12:39+05:30",
+        "committer_email": "noreply@github.com",
+        "commit": "52c1b95b1989ef2e238f880f20e4559692aeabe3",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Merge pull request #17 from OpusCapita/bug/BigInt",
+        "commit_url": "https://github.com/OpusCapita/email/commit/52c1b95b1989ef2e238f880f20e4559692aeabe3",
+        "author_login": "sureshvarman-cronj",
+        "author_name": "sureshvarman-cronj",
+        "author_email": "suresh.varman@cronj.com"
+      },
+      {
+        "committer_date": "2017-10-06T19:46:09+05:30",
+        "body": "",
+        "branch": "BigInt",
+        "author_date": "2017-10-06T19:46:09+05:30",
+        "committer_email": "noreply@github.com",
+        "commit": "b2aca1ab5c7ae040e6205ffc3aa0e66b61df0198",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Merge branch 'develop' into bug/BigInt",
+        "commit_url": "https://github.com/OpusCapita/email/commit/b2aca1ab5c7ae040e6205ffc3aa0e66b61df0198",
+        "author_login": "sureshvarman-cronj",
+        "author_name": "sureshvarman-cronj",
+        "author_email": "suresh.varman@cronj.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/email",
+    "author_name": "sureshvarman-cronj",
+    "node": null,
+    "queued_at": "2017-10-06T14:16:10.626Z",
+    "canceled": false,
+    "author_email": "suresh.varman@cronj.com"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/email/compare/74372288c6fd...96e01b0679a8",
+    "previous_successful_build": {
+      "build_num": 290,
+      "status": "success",
+      "build_time_millis": 69683
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T19:44:11+05:30",
+    "body": "",
+    "usage_queued_at": "2017-10-06T14:10:39.747Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "email",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/email/292",
+    "parallel": 1,
+    "failed": false,
+    "branch": "bug/BigInt",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T19:44:11+05:30",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "sureshvarman-cronj",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/20809609?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 20809609
+    },
+    "vcs_revision": "96e01b0679a812cb30eb0b30c751eded8683f55e",
+    "vcs_tag": null,
+    "build_num": 292,
+    "infrastructure_fail": false,
+    "committer_email": "sureshvarman-cronj",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 290,
+      "status": "success",
+      "build_time_millis": 69683
+    },
+    "status": "success",
+    "committer_name": "CronJ",
+    "retries": null,
+    "subject": "updating using crypted value",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T14:15:41.277Z",
+    "ssh_disabled": true,
+    "build_time_millis": 77930,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T14:14:23.347Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-06T19:44:11+05:30",
+        "body": "",
+        "branch": "BigInt",
+        "author_date": "2017-10-06T19:44:11+05:30",
+        "committer_email": "sureshvarman-cronj",
+        "commit": "96e01b0679a812cb30eb0b30c751eded8683f55e",
+        "committer_login": null,
+        "committer_name": "CronJ",
+        "subject": "updating using crypted value",
+        "commit_url": "https://github.com/OpusCapita/email/commit/96e01b0679a812cb30eb0b30c751eded8683f55e",
+        "author_login": null,
+        "author_name": "CronJ",
+        "author_email": "sureshvarman-cronj"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/email",
+    "author_name": "CronJ",
+    "node": null,
+    "queued_at": "2017-10-06T14:14:20.921Z",
+    "canceled": false,
+    "author_email": "sureshvarman-cronj"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/email/compare/d2cd1cb0a058...74372288c6fd",
+    "previous_successful_build": {
+      "build_num": 288,
+      "status": "success",
+      "build_time_millis": 84551
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T19:10:11+05:30",
+    "body": "",
+    "usage_queued_at": "2017-10-06T13:43:51.515Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "email",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/email/290",
+    "parallel": 1,
+    "failed": false,
+    "branch": "bug/BigInt",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T19:10:11+05:30",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "sureshvarman-cronj",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/20809609?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 20809609
+    },
+    "vcs_revision": "74372288c6fd3c3bc4bdbb53dfc5fd85816f0d62",
+    "vcs_tag": null,
+    "build_num": 290,
+    "infrastructure_fail": false,
+    "committer_email": "sureshvarman-cronj",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 289,
+      "status": "success",
+      "build_time_millis": 76949
+    },
+    "status": "success",
+    "committer_name": "CronJ",
+    "retries": null,
+    "subject": "config",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T13:41:32.091Z",
+    "ssh_disabled": true,
+    "build_time_millis": 69683,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T13:40:22.408Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-06T19:10:11+05:30",
+        "body": "",
+        "branch": "BigInt",
+        "author_date": "2017-10-06T19:10:11+05:30",
+        "committer_email": "sureshvarman-cronj",
+        "commit": "74372288c6fd3c3bc4bdbb53dfc5fd85816f0d62",
+        "committer_login": null,
+        "committer_name": "CronJ",
+        "subject": "config",
+        "commit_url": "https://github.com/OpusCapita/email/commit/74372288c6fd3c3bc4bdbb53dfc5fd85816f0d62",
+        "author_login": null,
+        "author_name": "CronJ",
+        "author_email": "sureshvarman-cronj"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/email",
+    "author_name": "CronJ",
+    "node": null,
+    "queued_at": "2017-10-06T13:40:19.836Z",
+    "canceled": false,
+    "author_email": "sureshvarman-cronj"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/email/compare/2c1e569067b5...52c1b95b1989",
+    "previous_successful_build": {
+      "build_num": 284,
+      "status": "success",
+      "build_time_millis": 143805
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T19:12:39+05:30",
+    "body": "Bug/big int",
+    "usage_queued_at": "2017-10-06T13:43:12.760Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "email",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/email/291",
+    "parallel": 1,
+    "failed": false,
+    "branch": "develop",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T19:12:39+05:30",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "sureshvarman-cronj",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/20809609?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 20809609
+    },
+    "vcs_revision": "52c1b95b1989ef2e238f880f20e4559692aeabe3",
+    "vcs_tag": null,
+    "build_num": 291,
+    "infrastructure_fail": false,
+    "committer_email": "noreply@github.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 286,
+      "status": "failed",
+      "build_time_millis": 1034103
+    },
+    "status": "fixed",
+    "committer_name": "GitHub",
+    "retries": null,
+    "subject": "Merge pull request #17 from OpusCapita/bug/BigInt",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T13:46:00.992Z",
+    "ssh_disabled": true,
+    "build_time_millis": 196890,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T13:42:44.102Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-09-19T20:33:16+05:30",
+        "body": "",
+        "branch": "develop",
+        "author_date": "2017-09-19T20:33:16+05:30",
+        "committer_email": "suresh.varman@cronj.com",
+        "commit": "8499f7578f225976cbc8e9dd4a453b86fe8c7a70",
+        "committer_login": "sureshvarman-cronj",
+        "committer_name": "sureshvarman",
+        "subject": "updated readme",
+        "commit_url": "https://github.com/OpusCapita/email/commit/8499f7578f225976cbc8e9dd4a453b86fe8c7a70",
+        "author_login": "sureshvarman-cronj",
+        "author_name": "sureshvarman",
+        "author_email": "suresh.varman@cronj.com"
+      },
+      {
+        "committer_date": "2017-09-28T16:47:45+05:30",
+        "body": "",
+        "branch": "develop",
+        "author_date": "2017-09-28T16:47:45+05:30",
+        "committer_email": "sureshvarman-cronj",
+        "commit": "9d01de82335ff1769685542534a0a5d2bc88c9b0",
+        "committer_login": null,
+        "committer_name": "CronJ",
+        "subject": "Merge branch 'develop' of https://github.com/OpusCapita/email into develop",
+        "commit_url": "https://github.com/OpusCapita/email/commit/9d01de82335ff1769685542534a0a5d2bc88c9b0",
+        "author_login": null,
+        "author_name": "CronJ",
+        "author_email": "sureshvarman-cronj"
+      },
+      {
+        "committer_date": "2017-09-28T20:11:46+05:30",
+        "body": "",
+        "branch": "develop",
+        "author_date": "2017-09-28T20:11:46+05:30",
+        "committer_email": "sureshvarman-cronj",
+        "commit": "766896b0e40b75323505aa6b696f72f2975d521b",
+        "committer_login": null,
+        "committer_name": "CronJ",
+        "subject": "bug on referring body data",
+        "commit_url": "https://github.com/OpusCapita/email/commit/766896b0e40b75323505aa6b696f72f2975d521b",
+        "author_login": null,
+        "author_name": "CronJ",
+        "author_email": "sureshvarman-cronj"
+      },
+      {
+        "committer_date": "2017-09-29T21:41:51+05:30",
+        "body": "",
+        "branch": "develop",
+        "author_date": "2017-09-29T21:41:51+05:30",
+        "committer_email": "sureshvarman-cronj",
+        "commit": "04c6c96b1cb1018dc2d232454cd5bdeadb83aebd",
+        "committer_login": null,
+        "committer_name": "CronJ",
+        "subject": "Merge branch 'develop' of https://github.com/OpusCapita/email into develop",
+        "commit_url": "https://github.com/OpusCapita/email/commit/04c6c96b1cb1018dc2d232454cd5bdeadb83aebd",
+        "author_login": null,
+        "author_name": "CronJ",
+        "author_email": "sureshvarman-cronj"
+      },
+      {
+        "committer_date": "2017-10-06T19:06:51+05:30",
+        "body": "",
+        "branch": "develop",
+        "author_date": "2017-10-06T19:06:51+05:30",
+        "committer_email": "sureshvarman-cronj",
+        "commit": "60b46df44d08ae3649ab406521a3bfe5e5b8480a",
+        "committer_login": null,
+        "committer_name": "CronJ",
+        "subject": "fixed, Big integer issue from mailjet server",
+        "commit_url": "https://github.com/OpusCapita/email/commit/60b46df44d08ae3649ab406521a3bfe5e5b8480a",
+        "author_login": null,
+        "author_name": "CronJ",
+        "author_email": "sureshvarman-cronj"
+      },
+      {
+        "committer_date": "2017-10-06T19:08:01+05:30",
+        "body": "",
+        "branch": "develop",
+        "author_date": "2017-10-06T19:08:01+05:30",
+        "committer_email": "noreply@github.com",
+        "commit": "cb193134f45b63e7526113cca8e9275e88559618",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Merge branch 'develop' into bug/BigInt",
+        "commit_url": "https://github.com/OpusCapita/email/commit/cb193134f45b63e7526113cca8e9275e88559618",
+        "author_login": "sureshvarman-cronj",
+        "author_name": "sureshvarman-cronj",
+        "author_email": "suresh.varman@cronj.com"
+      },
+      {
+        "committer_date": "2017-10-06T19:08:48+05:30",
+        "body": "",
+        "branch": "develop",
+        "author_date": "2017-10-06T19:08:48+05:30",
+        "committer_email": "sureshvarman-cronj",
+        "commit": "865e7fd3fad5b80d4366c029ce0ab7a7599c9767",
+        "committer_login": null,
+        "committer_name": "CronJ",
+        "subject": "resolved conflict",
+        "commit_url": "https://github.com/OpusCapita/email/commit/865e7fd3fad5b80d4366c029ce0ab7a7599c9767",
+        "author_login": null,
+        "author_name": "CronJ",
+        "author_email": "sureshvarman-cronj"
+      },
+      {
+        "committer_date": "2017-10-06T19:09:17+05:30",
+        "body": "",
+        "branch": "develop",
+        "author_date": "2017-10-06T19:09:17+05:30",
+        "committer_email": "sureshvarman-cronj",
+        "commit": "d2cd1cb0a058e8c80d2582e02e376648e2166bc4",
+        "committer_login": null,
+        "committer_name": "CronJ",
+        "subject": "resolved conflict",
+        "commit_url": "https://github.com/OpusCapita/email/commit/d2cd1cb0a058e8c80d2582e02e376648e2166bc4",
+        "author_login": null,
+        "author_name": "CronJ",
+        "author_email": "sureshvarman-cronj"
+      },
+      {
+        "committer_date": "2017-10-06T19:10:11+05:30",
+        "body": "",
+        "branch": "develop",
+        "author_date": "2017-10-06T19:10:11+05:30",
+        "committer_email": "sureshvarman-cronj",
+        "commit": "74372288c6fd3c3bc4bdbb53dfc5fd85816f0d62",
+        "committer_login": null,
+        "committer_name": "CronJ",
+        "subject": "config",
+        "commit_url": "https://github.com/OpusCapita/email/commit/74372288c6fd3c3bc4bdbb53dfc5fd85816f0d62",
+        "author_login": null,
+        "author_name": "CronJ",
+        "author_email": "sureshvarman-cronj"
+      },
+      {
+        "committer_date": "2017-10-06T19:12:39+05:30",
+        "body": "Bug/big int",
+        "branch": "develop",
+        "author_date": "2017-10-06T19:12:39+05:30",
+        "committer_email": "noreply@github.com",
+        "commit": "52c1b95b1989ef2e238f880f20e4559692aeabe3",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Merge pull request #17 from OpusCapita/bug/BigInt",
+        "commit_url": "https://github.com/OpusCapita/email/commit/52c1b95b1989ef2e238f880f20e4559692aeabe3",
+        "author_login": "sureshvarman-cronj",
+        "author_name": "sureshvarman-cronj",
+        "author_email": "suresh.varman@cronj.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/email",
+    "author_name": "sureshvarman-cronj",
+    "node": null,
+    "queued_at": "2017-10-06T13:42:41.534Z",
+    "canceled": false,
+    "author_email": "suresh.varman@cronj.com"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/email/compare/60b46df44d08...cb193134f45b",
+    "previous_successful_build": {
+      "build_num": 285,
+      "status": "success",
+      "build_time_millis": 211242
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T19:08:01+05:30",
+    "body": "",
+    "usage_queued_at": "2017-10-06T13:42:27.276Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "email",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/email/288",
+    "parallel": 1,
+    "failed": false,
+    "branch": "bug/BigInt",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T19:08:01+05:30",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "sureshvarman-cronj",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/20809609?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 20809609
+    },
+    "vcs_revision": "cb193134f45b63e7526113cca8e9275e88559618",
+    "vcs_tag": null,
+    "build_num": 288,
+    "infrastructure_fail": false,
+    "committer_email": "noreply@github.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 287,
+      "status": "success",
+      "build_time_millis": 137036
+    },
+    "status": "success",
+    "committer_name": "GitHub",
+    "retries": null,
+    "subject": "Merge branch 'develop' into bug/BigInt",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T13:39:30.582Z",
+    "ssh_disabled": true,
+    "build_time_millis": 84551,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "executor": "docker",
+          "build_agent": "0.0.4272-63d7ce9"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T13:38:06.031Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-04T15:50:07+05:30",
+        "body": "event callback email body changes.",
+        "branch": "BigInt",
+        "author_date": "2017-10-04T15:50:07+05:30",
+        "committer_email": "noreply@github.com",
+        "commit": "5e74cf6c5d6fbd8538dd59c16ba8c4e4decb8439",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Update event.js",
+        "commit_url": "https://github.com/OpusCapita/email/commit/5e74cf6c5d6fbd8538dd59c16ba8c4e4decb8439",
+        "author_login": "sureshvarman-cronj",
+        "author_name": "sureshvarman-cronj",
+        "author_email": "suresh.varman@cronj.com"
+      },
+      {
+        "committer_date": "2017-10-04T12:21:58+02:00",
+        "body": "Update event.js",
+        "branch": "BigInt",
+        "author_date": "2017-10-04T12:21:58+02:00",
+        "committer_email": "noreply@github.com",
+        "commit": "2c1e569067b559fdd749d9eb59f03430452a3aa2",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Merge pull request #16 from OpusCapita/sureshvarman-cronj-patch-1",
+        "commit_url": "https://github.com/OpusCapita/email/commit/2c1e569067b559fdd749d9eb59f03430452a3aa2",
+        "author_login": "kwierchris",
+        "author_name": "Christian Drengenberg",
+        "author_email": "kwierchris@users.noreply.github.com"
+      },
+      {
+        "committer_date": "2017-10-06T19:08:01+05:30",
+        "body": "",
+        "branch": "BigInt",
+        "author_date": "2017-10-06T19:08:01+05:30",
+        "committer_email": "noreply@github.com",
+        "commit": "cb193134f45b63e7526113cca8e9275e88559618",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Merge branch 'develop' into bug/BigInt",
+        "commit_url": "https://github.com/OpusCapita/email/commit/cb193134f45b63e7526113cca8e9275e88559618",
+        "author_login": "sureshvarman-cronj",
+        "author_name": "sureshvarman-cronj",
+        "author_email": "suresh.varman@cronj.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/email",
+    "author_name": "sureshvarman-cronj",
+    "node": null,
+    "queued_at": "2017-10-06T13:38:03.156Z",
+    "canceled": false,
+    "author_email": "suresh.varman@cronj.com"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/email/compare/cb193134f45b...d2cd1cb0a058",
+    "previous_successful_build": {
+      "build_num": 287,
+      "status": "success",
+      "build_time_millis": 137036
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T19:09:17+05:30",
+    "body": "",
+    "usage_queued_at": "2017-10-06T13:40:36.754Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "email",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/email/289",
+    "parallel": 1,
+    "failed": false,
+    "branch": "bug/BigInt",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T19:09:17+05:30",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "sureshvarman-cronj",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/20809609?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 20809609
+    },
+    "vcs_revision": "d2cd1cb0a058e8c80d2582e02e376648e2166bc4",
+    "vcs_tag": null,
+    "build_num": 289,
+    "infrastructure_fail": false,
+    "committer_email": "sureshvarman-cronj",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 288,
+      "status": "success",
+      "build_time_millis": 84551
+    },
+    "status": "success",
+    "committer_name": "CronJ",
+    "retries": null,
+    "subject": "resolved conflict",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T13:40:44.263Z",
+    "ssh_disabled": true,
+    "build_time_millis": 76949,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "executor": "docker",
+          "build_agent": "0.0.4272-63d7ce9"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T13:39:27.314Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-06T19:08:48+05:30",
+        "body": "",
+        "branch": "BigInt",
+        "author_date": "2017-10-06T19:08:48+05:30",
+        "committer_email": "sureshvarman-cronj",
+        "commit": "865e7fd3fad5b80d4366c029ce0ab7a7599c9767",
+        "committer_login": null,
+        "committer_name": "CronJ",
+        "subject": "resolved conflict",
+        "commit_url": "https://github.com/OpusCapita/email/commit/865e7fd3fad5b80d4366c029ce0ab7a7599c9767",
+        "author_login": null,
+        "author_name": "CronJ",
+        "author_email": "sureshvarman-cronj"
+      },
+      {
+        "committer_date": "2017-10-06T19:09:17+05:30",
+        "body": "",
+        "branch": "BigInt",
+        "author_date": "2017-10-06T19:09:17+05:30",
+        "committer_email": "sureshvarman-cronj",
+        "commit": "d2cd1cb0a058e8c80d2582e02e376648e2166bc4",
+        "committer_login": null,
+        "committer_name": "CronJ",
+        "subject": "resolved conflict",
+        "commit_url": "https://github.com/OpusCapita/email/commit/d2cd1cb0a058e8c80d2582e02e376648e2166bc4",
+        "author_login": null,
+        "author_name": "CronJ",
+        "author_email": "sureshvarman-cronj"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/email",
+    "author_name": "CronJ",
+    "node": null,
+    "queued_at": "2017-10-06T13:39:24.330Z",
+    "canceled": false,
+    "author_email": "sureshvarman-cronj"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/email/compare/8499f7578f22^...60b46df44d08",
+    "previous_successful_build": {
+      "build_num": 285,
+      "status": "success",
+      "build_time_millis": 211242
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T19:06:51+05:30",
+    "body": "",
+    "usage_queued_at": "2017-10-06T13:34:32.067Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "email",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/email/287",
+    "parallel": 1,
+    "failed": false,
+    "branch": "bug/BigInt",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T19:06:51+05:30",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "sureshvarman-cronj",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/20809609?v=4",
+      "name": null,
+      "vcs_type": "github",
+      "id": 20809609
+    },
+    "vcs_revision": "60b46df44d08ae3649ab406521a3bfe5e5b8480a",
+    "vcs_tag": null,
+    "build_num": 287,
+    "infrastructure_fail": false,
+    "committer_email": "sureshvarman-cronj",
+    "has_artifacts": true,
+    "previous": null,
+    "status": "success",
+    "committer_name": "CronJ",
+    "retries": null,
+    "subject": "fixed, Big integer issue from mailjet server",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T13:39:21.013Z",
+    "ssh_disabled": true,
+    "build_time_millis": 137036,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T13:37:03.977Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-09-19T20:33:16+05:30",
+        "body": "",
+        "branch": "BigInt",
+        "author_date": "2017-09-19T20:33:16+05:30",
+        "committer_email": "suresh.varman@cronj.com",
+        "commit": "8499f7578f225976cbc8e9dd4a453b86fe8c7a70",
+        "committer_login": "sureshvarman-cronj",
+        "committer_name": "sureshvarman",
+        "subject": "updated readme",
+        "commit_url": "https://github.com/OpusCapita/email/commit/8499f7578f225976cbc8e9dd4a453b86fe8c7a70",
+        "author_login": "sureshvarman-cronj",
+        "author_name": "sureshvarman",
+        "author_email": "suresh.varman@cronj.com"
+      },
+      {
+        "committer_date": "2017-09-28T16:47:45+05:30",
+        "body": "",
+        "branch": "BigInt",
+        "author_date": "2017-09-28T16:47:45+05:30",
+        "committer_email": "sureshvarman-cronj",
+        "commit": "9d01de82335ff1769685542534a0a5d2bc88c9b0",
+        "committer_login": null,
+        "committer_name": "CronJ",
+        "subject": "Merge branch 'develop' of https://github.com/OpusCapita/email into develop",
+        "commit_url": "https://github.com/OpusCapita/email/commit/9d01de82335ff1769685542534a0a5d2bc88c9b0",
+        "author_login": null,
+        "author_name": "CronJ",
+        "author_email": "sureshvarman-cronj"
+      },
+      {
+        "committer_date": "2017-09-28T20:11:46+05:30",
+        "body": "",
+        "branch": "BigInt",
+        "author_date": "2017-09-28T20:11:46+05:30",
+        "committer_email": "sureshvarman-cronj",
+        "commit": "766896b0e40b75323505aa6b696f72f2975d521b",
+        "committer_login": null,
+        "committer_name": "CronJ",
+        "subject": "bug on referring body data",
+        "commit_url": "https://github.com/OpusCapita/email/commit/766896b0e40b75323505aa6b696f72f2975d521b",
+        "author_login": null,
+        "author_name": "CronJ",
+        "author_email": "sureshvarman-cronj"
+      },
+      {
+        "committer_date": "2017-09-29T21:41:51+05:30",
+        "body": "",
+        "branch": "BigInt",
+        "author_date": "2017-09-29T21:41:51+05:30",
+        "committer_email": "sureshvarman-cronj",
+        "commit": "04c6c96b1cb1018dc2d232454cd5bdeadb83aebd",
+        "committer_login": null,
+        "committer_name": "CronJ",
+        "subject": "Merge branch 'develop' of https://github.com/OpusCapita/email into develop",
+        "commit_url": "https://github.com/OpusCapita/email/commit/04c6c96b1cb1018dc2d232454cd5bdeadb83aebd",
+        "author_login": null,
+        "author_name": "CronJ",
+        "author_email": "sureshvarman-cronj"
+      },
+      {
+        "committer_date": "2017-10-06T19:06:51+05:30",
+        "body": "",
+        "branch": "BigInt",
+        "author_date": "2017-10-06T19:06:51+05:30",
+        "committer_email": "sureshvarman-cronj",
+        "commit": "60b46df44d08ae3649ab406521a3bfe5e5b8480a",
+        "committer_login": null,
+        "committer_name": "CronJ",
+        "subject": "fixed, Big integer issue from mailjet server",
+        "commit_url": "https://github.com/OpusCapita/email/commit/60b46df44d08ae3649ab406521a3bfe5e5b8480a",
+        "author_login": null,
+        "author_name": "CronJ",
+        "author_email": "sureshvarman-cronj"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/email",
+    "author_name": "CronJ",
+    "node": null,
+    "queued_at": "2017-10-06T13:37:00.498Z",
+    "canceled": false,
+    "author_email": "sureshvarman-cronj"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/supplier/compare/86cc8165d0bf...cc5d93a44c65",
+    "previous_successful_build": {
+      "build_num": 905,
+      "status": "success",
+      "build_time_millis": 290912
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T15:30:11+02:00",
+    "body": "",
+    "usage_queued_at": "2017-10-06T13:30:06.722Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "supplier",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/supplier/920",
+    "parallel": 1,
+    "failed": false,
+    "branch": "feature/118-add-user-request-for-access-to-registered-supplier",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T15:30:11+02:00",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "lasong",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1188617?v=4",
+      "name": "Lekealem Asong",
+      "vcs_type": "github",
+      "id": 1188617
+    },
+    "vcs_revision": "cc5d93a44c65a850773494e26f55aa4da59cca4c",
+    "vcs_tag": null,
+    "build_num": 920,
+    "infrastructure_fail": false,
+    "committer_email": "lekealemasong@yahoo.de",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 905,
+      "status": "success",
+      "build_time_millis": 290912
+    },
+    "status": "success",
+    "committer_name": "Lekealem Asong",
+    "retries": null,
+    "subject": "Add email notification for supplier access request",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T13:34:40.043Z",
+    "ssh_disabled": true,
+    "build_time_millis": 260144,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T13:30:19.899Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-09-28T11:27:39Z",
+        "body": "",
+        "branch": "118-add-user-request-for-access-to-registered-supplier",
+        "author_date": "2017-09-28T11:27:39Z",
+        "committer_email": "arne.graeper@opuscapita.com",
+        "commit": "9a9d70c701656f8becda60ba0fa3013f2f5dccac",
+        "committer_login": "gr4per",
+        "committer_name": "gr4per",
+        "subject": "1.0.24 [ci skip]",
+        "commit_url": "https://github.com/OpusCapita/supplier/commit/9a9d70c701656f8becda60ba0fa3013f2f5dccac",
+        "author_login": "gr4per",
+        "author_name": "gr4per",
+        "author_email": "arne.graeper@opuscapita.com"
+      },
+      {
+        "committer_date": "2017-09-29T10:01:55+02:00",
+        "body": "",
+        "branch": "118-add-user-request-for-access-to-registered-supplier",
+        "author_date": "2017-09-29T10:01:55+02:00",
+        "committer_email": "noreply@github.com",
+        "commit": "36e8ac7e4a6750dffcb85f092e14a925ae002180",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Create UserAccessRequest.md",
+        "commit_url": "https://github.com/OpusCapita/supplier/commit/36e8ac7e4a6750dffcb85f092e14a925ae002180",
+        "author_login": "gr4per",
+        "author_name": "gr4per",
+        "author_email": "arne.graeper@opuscapita.com"
+      },
+      {
+        "committer_date": "2017-09-29T10:03:16+02:00",
+        "body": "",
+        "branch": "118-add-user-request-for-access-to-registered-supplier",
+        "author_date": "2017-09-29T10:03:16+02:00",
+        "committer_email": "noreply@github.com",
+        "commit": "2a9edf5b117d67ff0e3d3b6c271f79029f8566fb",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Update SupplierSelfRegistration.md",
+        "commit_url": "https://github.com/OpusCapita/supplier/commit/2a9edf5b117d67ff0e3d3b6c271f79029f8566fb",
+        "author_login": "gr4per",
+        "author_name": "gr4per",
+        "author_email": "arne.graeper@opuscapita.com"
+      },
+      {
+        "committer_date": "2017-09-29T10:39:35+02:00",
+        "body": "",
+        "branch": "118-add-user-request-for-access-to-registered-supplier",
+        "author_date": "2017-09-29T10:39:35+02:00",
+        "committer_email": "noreply@github.com",
+        "commit": "85a45eba289991d2f4dba1a7e5cb39c553919489",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Create SupplierUserManagement.md",
+        "commit_url": "https://github.com/OpusCapita/supplier/commit/85a45eba289991d2f4dba1a7e5cb39c553919489",
+        "author_login": "gr4per",
+        "author_name": "gr4per",
+        "author_email": "arne.graeper@opuscapita.com"
+      },
+      {
+        "committer_date": "2017-09-29T10:48:02+02:00",
+        "body": "",
+        "branch": "118-add-user-request-for-access-to-registered-supplier",
+        "author_date": "2017-09-29T10:48:02+02:00",
+        "committer_email": "noreply@github.com",
+        "commit": "bf39ea82d44a0f2e4f6aa557134c5c44bbeaf140",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Update SupplierSelfRegistration.md",
+        "commit_url": "https://github.com/OpusCapita/supplier/commit/bf39ea82d44a0f2e4f6aa557134c5c44bbeaf140",
+        "author_login": "lasong",
+        "author_name": "Lekealem Asong",
+        "author_email": "lekealemasong@yahoo.de"
+      },
+      {
+        "committer_date": "2017-09-29T10:54:54+02:00",
+        "body": "",
+        "branch": "118-add-user-request-for-access-to-registered-supplier",
+        "author_date": "2017-09-29T10:54:54+02:00",
+        "committer_email": "noreply@github.com",
+        "commit": "a0b4f348ad4ab22b4ab8bf67af31c398aa82354e",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Update UserAccessRequest.md",
+        "commit_url": "https://github.com/OpusCapita/supplier/commit/a0b4f348ad4ab22b4ab8bf67af31c398aa82354e",
+        "author_login": "lasong",
+        "author_name": "Lekealem Asong",
+        "author_email": "lekealemasong@yahoo.de"
+      },
+      {
+        "committer_date": "2017-09-29T10:55:42+02:00",
+        "body": "",
+        "branch": "118-add-user-request-for-access-to-registered-supplier",
+        "author_date": "2017-09-29T10:55:42+02:00",
+        "committer_email": "noreply@github.com",
+        "commit": "f867f28532993cc53cef89d7566881a18d236114",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Update SupplierUserManagement.md",
+        "commit_url": "https://github.com/OpusCapita/supplier/commit/f867f28532993cc53cef89d7566881a18d236114",
+        "author_login": "lasong",
+        "author_name": "Lekealem Asong",
+        "author_email": "lekealemasong@yahoo.de"
+      },
+      {
+        "committer_date": "2017-09-29T10:56:23+02:00",
+        "body": "",
+        "branch": "118-add-user-request-for-access-to-registered-supplier",
+        "author_date": "2017-09-29T10:56:23+02:00",
+        "committer_email": "noreply@github.com",
+        "commit": "36ac318c40489780fcb5ebe813423d8041e252f0",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Update SupplierSelfRegistration.md",
+        "commit_url": "https://github.com/OpusCapita/supplier/commit/36ac318c40489780fcb5ebe813423d8041e252f0",
+        "author_login": "lasong",
+        "author_name": "Lekealem Asong",
+        "author_email": "lekealemasong@yahoo.de"
+      },
+      {
+        "committer_date": "2017-09-29T15:59:04+02:00",
+        "body": "",
+        "branch": "118-add-user-request-for-access-to-registered-supplier",
+        "author_date": "2017-09-29T15:59:04+02:00",
+        "committer_email": "noreply@github.com",
+        "commit": "965521b9025405fa6b6e04d3a721a36aaaeb5b3f",
+        "committer_login": "web-flow",
+        "committer_name": "GitHub",
+        "subject": "Update SupplierUserManagement.md",
+        "commit_url": "https://github.com/OpusCapita/supplier/commit/965521b9025405fa6b6e04d3a721a36aaaeb5b3f",
+        "author_login": "lasong",
+        "author_name": "Lekealem Asong",
+        "author_email": "lekealemasong@yahoo.de"
+      },
+      {
+        "committer_date": "2017-10-05T13:43:22+02:00",
+        "body": "",
+        "branch": "118-add-user-request-for-access-to-registered-supplier",
+        "author_date": "2017-10-05T13:43:22+02:00",
+        "committer_email": "lekealemasong@yahoo.de",
+        "commit": "24ea4e793d0714d9d459c30f47941411b3419cdc",
+        "committer_login": "lasong",
+        "committer_name": "Lekealem Asong",
+        "subject": "Merge branch 'develop' into feature/118-add-user-request-for-access-to-registered-supplier",
+        "commit_url": "https://github.com/OpusCapita/supplier/commit/24ea4e793d0714d9d459c30f47941411b3419cdc",
+        "author_login": "lasong",
+        "author_name": "Lekealem Asong",
+        "author_email": "lekealemasong@yahoo.de"
+      },
+      {
+        "committer_date": "2017-10-06T15:30:11+02:00",
+        "body": "",
+        "branch": "118-add-user-request-for-access-to-registered-supplier",
+        "author_date": "2017-10-06T15:30:11+02:00",
+        "committer_email": "lekealemasong@yahoo.de",
+        "commit": "cc5d93a44c65a850773494e26f55aa4da59cca4c",
+        "committer_login": "lasong",
+        "committer_name": "Lekealem Asong",
+        "subject": "Add email notification for supplier access request",
+        "commit_url": "https://github.com/OpusCapita/supplier/commit/cc5d93a44c65a850773494e26f55aa4da59cca4c",
+        "author_login": "lasong",
+        "author_name": "Lekealem Asong",
+        "author_email": "lekealemasong@yahoo.de"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/supplier",
+    "author_name": "Lekealem Asong",
+    "node": null,
+    "queued_at": "2017-10-06T13:30:17.722Z",
+    "canceled": false,
+    "author_email": "lekealemasong@yahoo.de"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/config/compare/e7582ec5de58...32a9e2fcac43",
+    "previous_successful_build": {
+      "build_num": 107,
+      "status": "success",
+      "build_time_millis": 277603
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T14:55:41+02:00",
+    "body": "",
+    "usage_queued_at": "2017-10-06T12:58:28.431Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "config",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/config/108",
+    "parallel": 1,
+    "failed": null,
+    "branch": "feature/5",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T14:55:41+02:00",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "StefanDywersant",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/7136002?v=4",
+      "name": "Karol Maciaszek",
+      "vcs_type": "github",
+      "id": 7136002
+    },
+    "vcs_revision": "32a9e2fcac43d91e75360bb71dbc4fc06b24445a",
+    "vcs_tag": null,
+    "build_num": 108,
+    "infrastructure_fail": false,
+    "committer_email": "karol@maciaszek.pl",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 107,
+      "status": "success",
+      "build_time_millis": 277603
+    },
+    "status": "success",
+    "committer_name": "Karol Maciaszek",
+    "retries": null,
+    "subject": "Removed additional logging, set up default secret",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T12:59:15.353Z",
+    "ssh_disabled": false,
+    "build_time_millis": 209932,
+    "picard": null,
+    "circle_yml": {
+      "string": "machine:\n  pre:\n   - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0\n   - pip install --force-reinstall -U docker-compose==1.10.0\n   - sudo pkill -f dnsmasq\n   - cd config ; rm -Rf wiki ; git clone https://github.com/OpusCapitaBusinessNetwork/config.wiki.git wiki\n  services:\n    - docker\n\ndependencies:\n  pre:\n    - echo -e \"$NPM_USERNAME\\n$NPM_PASSWORD\\n$NPM_EMAIL\" | npm login\n\ntest:\n  override:\n    - >\n        export HOST_IP=$(ifconfig | grep \"docker0\" -A1 | grep -o -P \"inet addr:.*? \" | grep -o -P \"\\d+\\.\\d+\\.\\d+\\.\\d+\") ;\n        docker-compose run main npm run test ;\n        docker-compose run main npm run test-coverage ;\n        docker-compose run main npm run doc\n  post:\n    - sudo mkdir $CIRCLE_TEST_REPORTS/junit\n    - sudo cp test-results.xml $CIRCLE_TEST_REPORTS/junit\n\ndeployment:\n  npm:\n    branch: master\n    commands:\n      - npm publish\n      - npm run upload-coverage\n      - cd wiki ; git add --all . ; git commit -am 'Updated documentation.' ; git push ; (exit 0)\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T12:55:45.421Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-06T14:55:41+02:00",
+        "body": "",
+        "branch": "5",
+        "author_date": "2017-10-06T14:55:41+02:00",
+        "committer_email": "karol@maciaszek.pl",
+        "commit": "32a9e2fcac43d91e75360bb71dbc4fc06b24445a",
+        "committer_login": "StefanDywersant",
+        "committer_name": "Karol Maciaszek",
+        "subject": "Removed additional logging, set up default secret",
+        "commit_url": "https://github.com/OpusCapita/config/commit/32a9e2fcac43d91e75360bb71dbc4fc06b24445a",
+        "author_login": "StefanDywersant",
+        "author_name": "Karol Maciaszek",
+        "author_email": "karol@maciaszek.pl"
+      }
+    ],
+    "platform": "1.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/config",
+    "author_name": "Karol Maciaszek",
+    "node": [
+      {
+        "public_ip_addr": "54.163.15.73",
+        "port": 64638,
+        "username": "ubuntu",
+        "image_id": "s3://lxc-images/build-image-ubuntu-14.04-XXL-1239-04cfc8d.tar.gz",
+        "ssh_enabled": null
+      }
+    ],
+    "queued_at": "2017-10-06T12:55:45.346Z",
+    "canceled": false,
+    "author_email": "karol@maciaszek.pl"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/invoice/compare/73dda01dab02...77e5f00349c7",
+    "previous_successful_build": {
+      "build_num": 848,
+      "status": "success",
+      "build_time_millis": 732251
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T15:48:51+03:00",
+    "body": "",
+    "usage_queued_at": "2017-10-06T12:47:41.108Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "invoice",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/invoice/849",
+    "parallel": 1,
+    "failed": false,
+    "branch": "develop",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T15:48:51+03:00",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "dzhitomirsky-sc",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/24650360?v=4",
+      "name": "  Daniel Zhitomirsky",
+      "vcs_type": "github",
+      "id": 24650360
+    },
+    "vcs_revision": "77e5f00349c73ffd44f103e9b682fd7dfd037591",
+    "vcs_tag": null,
+    "build_num": 849,
+    "infrastructure_fail": false,
+    "committer_email": "dzhitomirsky-sc@users.noreply.github.com",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 848,
+      "status": "success",
+      "build_time_millis": 732251
+    },
+    "status": "success",
+    "committer_name": "Daniel Zhitomirsky",
+    "retries": null,
+    "subject": "#214 Added migration files. (#216)",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T13:05:30.688Z",
+    "ssh_disabled": true,
+    "build_time_millis": 995636,
+    "picard": {
+      "build_agent": {
+        "image": null,
+        "properties": {
+          "build_agent": "0.0.4272-63d7ce9",
+          "executor": "docker"
+        }
+      },
+      "resource_class": {
+        "cpu": 2,
+        "ram": 4096,
+        "class": "medium"
+      }
+    },
+    "circle_yml": {
+      "string": "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - run:\n          name: Run tests with coverage and post it to coverrals.io\n          command: |\n            mv .dockerignore .dockerignore_tmp_disabled\n            docker-compose -f docker-compose.unit.yml up\n            mkdir junit\n            docker cp $(docker ps -l -q):/home/node/invoice/test-results.xml ./junit/test-results.xml\n            mv .dockerignore_tmp_disabled .dockerignore\n            exit $(docker ps -l -q | xargs docker inspect -f '{{ .State.ExitCode }}')\n      - store_artifacts:\n          path: ./junit/test-results.xml\n          prefix: tests\n      - store_test_results:\n          path: ./junit\n      - run:\n          name: Deployment script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh\n            chmod +x buildscript.sh\n            ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME\n\n\n  copy_to_env:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - run:\n          name: Mirror Script\n          command: |\n            export andariel_branch=develop\n            if [[ \"$CIRCLE_BRANCH\" == \"master\" ]]; then export andariel_branch=master; fi\n            curl -f --header \"Authorization: token $GIT_TOKEN\" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh\n            chmod +x mirrorscript.sh\n            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN\n\n  build_base:\n    docker:\n      - image: circleci/node:8\n    working_directory: ~/build\n\n    steps:\n      - checkout\n      - setup_remote_docker\n      - deploy:\n          name: Build and push Docker base image\n          command: |\n            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .\n            docker login -u $DOCKER_USER -p $DOCKER_PASS\n            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base\n\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T12:48:55.052Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-06T15:48:51+03:00",
+        "body": "",
+        "branch": "develop",
+        "author_date": "2017-10-06T15:48:51+03:00",
+        "committer_email": "dzhitomirsky-sc@users.noreply.github.com",
+        "commit": "77e5f00349c73ffd44f103e9b682fd7dfd037591",
+        "committer_login": "dzhitomirsky-sc",
+        "committer_name": "Daniel Zhitomirsky",
+        "subject": "#214 Added migration files. (#216)",
+        "commit_url": "https://github.com/OpusCapita/invoice/commit/77e5f00349c73ffd44f103e9b682fd7dfd037591",
+        "author_login": "alevchuk-sc",
+        "author_name": "Anton Levchuk",
+        "author_email": "alevchuk-sc@users.noreply.github.com"
+      }
+    ],
+    "platform": "2.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/invoice",
+    "author_name": "Anton Levchuk",
+    "node": null,
+    "queued_at": "2017-10-06T12:48:52.912Z",
+    "canceled": false,
+    "author_email": "alevchuk-sc@users.noreply.github.com"
+  },
+  {
+    "compare": "https://github.com/OpusCapita/config/compare/5c0c5b717a39...e7582ec5de58",
+    "previous_successful_build": {
+      "build_num": 106,
+      "status": "success",
+      "build_time_millis": 231741
+    },
+    "build_parameters": null,
+    "oss": true,
+    "all_commit_details_truncated": false,
+    "committer_date": "2017-10-06T14:40:32+02:00",
+    "body": "",
+    "usage_queued_at": "2017-10-06T12:40:31.903Z",
+    "fail_reason": null,
+    "retry_of": null,
+    "reponame": "config",
+    "ssh_users": [],
+    "build_url": "https://circleci.com/gh/OpusCapita/config/107",
+    "parallel": 1,
+    "failed": null,
+    "branch": "feature/5",
+    "username": "OpusCapita",
+    "author_date": "2017-10-06T14:40:32+02:00",
+    "why": "github",
+    "user": {
+      "is_user": true,
+      "login": "StefanDywersant",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/7136002?v=4",
+      "name": "Karol Maciaszek",
+      "vcs_type": "github",
+      "id": 7136002
+    },
+    "vcs_revision": "e7582ec5de58159c2215f14b20f58e67ee5503fe",
+    "vcs_tag": null,
+    "build_num": 107,
+    "infrastructure_fail": false,
+    "committer_email": "karol@maciaszek.pl",
+    "has_artifacts": true,
+    "previous": {
+      "build_num": 106,
+      "status": "success",
+      "build_time_millis": 231741
+    },
+    "status": "success",
+    "committer_name": "Karol Maciaszek",
+    "retries": null,
+    "subject": "Striping trailing \\n",
+    "vcs_type": "github",
+    "timedout": false,
+    "dont_build": null,
+    "lifecycle": "finished",
+    "no_dependency_cache": false,
+    "stop_time": "2017-10-06T12:45:14.349Z",
+    "ssh_disabled": false,
+    "build_time_millis": 277603,
+    "picard": null,
+    "circle_yml": {
+      "string": "machine:\n  pre:\n   - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0\n   - pip install --force-reinstall -U docker-compose==1.10.0\n   - sudo pkill -f dnsmasq\n   - cd config ; rm -Rf wiki ; git clone https://github.com/OpusCapitaBusinessNetwork/config.wiki.git wiki\n  services:\n    - docker\n\ndependencies:\n  pre:\n    - echo -e \"$NPM_USERNAME\\n$NPM_PASSWORD\\n$NPM_EMAIL\" | npm login\n\ntest:\n  override:\n    - >\n        export HOST_IP=$(ifconfig | grep \"docker0\" -A1 | grep -o -P \"inet addr:.*? \" | grep -o -P \"\\d+\\.\\d+\\.\\d+\\.\\d+\") ;\n        docker-compose run main npm run test ;\n        docker-compose run main npm run test-coverage ;\n        docker-compose run main npm run doc\n  post:\n    - sudo mkdir $CIRCLE_TEST_REPORTS/junit\n    - sudo cp test-results.xml $CIRCLE_TEST_REPORTS/junit\n\ndeployment:\n  npm:\n    branch: master\n    commands:\n      - npm publish\n      - npm run upload-coverage\n      - cd wiki ; git add --all . ; git commit -am 'Updated documentation.' ; git push ; (exit 0)\n"
+    },
+    "messages": [],
+    "is_first_green_build": false,
+    "job_name": null,
+    "start_time": "2017-10-06T12:40:36.746Z",
+    "canceler": null,
+    "all_commit_details": [
+      {
+        "committer_date": "2017-10-06T14:40:32+02:00",
+        "body": "",
+        "branch": "5",
+        "author_date": "2017-10-06T14:40:32+02:00",
+        "committer_email": "karol@maciaszek.pl",
+        "commit": "e7582ec5de58159c2215f14b20f58e67ee5503fe",
+        "committer_login": "StefanDywersant",
+        "committer_name": "Karol Maciaszek",
+        "subject": "Striping trailing \\n",
+        "commit_url": "https://github.com/OpusCapita/config/commit/e7582ec5de58159c2215f14b20f58e67ee5503fe",
+        "author_login": "StefanDywersant",
+        "author_name": "Karol Maciaszek",
+        "author_email": "karol@maciaszek.pl"
+      }
+    ],
+    "platform": "1.0",
+    "outcome": "success",
+    "vcs_url": "https://github.com/OpusCapita/config",
+    "author_name": "Karol Maciaszek",
+    "node": [
+      {
+        "public_ip_addr": "18.216.12.126",
+        "port": 64755,
+        "username": "ubuntu",
+        "image_id": "s3://lxc-images-us-east-2/build-image-ubuntu-14.04-XXL-1239-04cfc8d.tar.gz",
+        "ssh_enabled": null
+      }
+    ],
+    "queued_at": "2017-10-06T12:40:36.728Z",
+    "canceled": false,
+    "author_email": "karol@maciaszek.pl"
+  }
+]

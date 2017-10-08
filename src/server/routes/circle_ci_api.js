@@ -4,9 +4,8 @@ const api_key = 'Completely Secret!!!';
 const request = require('request');
 const zlib = require('zlib');
 
-let getRecentBuilds = function () {
-
-    return getRequestOptions(`${base_api_url}recent-builds?circle-token=${api_key}&limit=1`)
+const getRecentBuilds = function () {
+    return getRequestOptions(`${base_api_url}recent-builds?circle-token=${api_key}`)
         .then(options => requestWithEncoding(options))
         .catch(error => {
             console.log(error);
@@ -73,4 +72,4 @@ const convert2JSON = function (string) {
 
 getRecentBuilds()
     .then(response => convert2JSON(response))
-    .then(result => console.log(result[0]));
+    .then(result => console.log(JSON.stringify(result)));

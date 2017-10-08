@@ -66,6 +66,7 @@ const analyseHealthChecks = function (healthChecks) {
 };
 
 const enrichWithDeploymentInfo = function (healthChecks) {
+    // TODO: getRecentBuilds().then(builds => ...
     return Promise.all(
         healthChecks.map(
             check => {
@@ -74,12 +75,6 @@ const enrichWithDeploymentInfo = function (healthChecks) {
             }
         )
     )
-};
-
-const getCircleCiDeployments = function () {
-    return new Promise((resolve, reject) => {
-        
-    });
 };
 
 const enrichWithSevInfo = function (healthChecks) {
