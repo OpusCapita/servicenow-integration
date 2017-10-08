@@ -80,7 +80,7 @@ const getCircleCiDeployments = function () {
     return new Promise((resolve, reject) => {
         
     });
-}
+};
 
 const enrichWithSevInfo = function (healthChecks) {
     return Promise.all(
