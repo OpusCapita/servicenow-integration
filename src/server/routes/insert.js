@@ -23,8 +23,7 @@ module.exports = function (app, db, config) {
 const handleInsertByApi = function (req) {
     return new Promise((resolve, reject) => {
         try {
-            let request = JSON.parse(req.body);
-            request = validateCustomRequest(request);
+            let request = validateCustomRequest(req.body);
             return resolve(sendServiceNowRequest(request));
         } catch (error) {
             log.error(error);
@@ -34,35 +33,38 @@ const handleInsertByApi = function (req) {
 };
 
 const validateCustomRequest = function (request) {
-    const mandatoryFields = ['shortDesc', 'longDesc', 'prio', 'customer', 'service', 'assignmentgroup'];
+    const mandatoryFields = ['shortdesc', 'longdesc', 'prio', 'customer', 'service', 'assignmentgroup'];
     const assignmentGroupMapping = {
-        '1': 'OC CS GLOB Service Desk AM',
-        '2': 'OC CS GLOB Service Desk'
+        'plattform': 'OC CS GLOB Service Desk AM',
     };
     const result = {};
-    let errors = mandatoryFields.filter(field => Object.keys(request).indexOf(field) === -1);
+    let mandatory_errors = mandatoryFields.filter(
+        field => Object.keys(request).indexOf(field) === -1
+            || !request[field]);
 
+    let errors = [];
     // prio
     if (!request['prio'] || !['1', '2', '3'].includes(request['prio']))
-        errors.push('prio');
+        errors.push(`Field prio not valid: ${request['prio']}. \nPlease use value out of [1,2,3]`);
     else
         result['u_priority'] = request['prio'];
 
     // assignmentgroup
     if (!request['assignmentgroup'] || !assignmentGroupMapping[request['assignmentgroup']])
-        errors.push('assignmentgroup');
+        errors.push(`Field assignmentgroup could not be mapped internally. \nPlease use one of those: ${JSON.stringify(assignmentGroupMapping)}`);
     else
         result['u_assignment_group'] = assignmentGroupMapping[request['assignmentgroup']];
 
-    // throw if invalid input
-    if (errors.length > 0) {
-        errors = errors.map(error => `field ${error} is not valid: ${request[error]}`);
-        throw new Error(JSON.stringify(errors));
-    }
+    // mapping missing mandatory fields to error-messages
+    mandatory_errors = mandatory_errors.map(error => `field ${error} is not valid: ${request[error]}`);
 
-    result['u_short_descr'] = request.shortDesc;
-    result['u_det_descr'] = request.longDesc;
-    result['u_service'] = request.service;
+    let totalErrors = mandatory_errors.concat(errors);
+    if (totalErrors.length > 0)
+        throw new Error(JSON.stringify(totalErrors));
+
+    result['u_short_descr'] = request['shortdesc'];
+    result['u_det_descr'] = request['longdesc'];
+    result['u_service'] = request['service'];
     // TODO: caller_id should be technical account
     result['u_caller_id'] = 'TUBBEST1';
     result['u_error_type'] = "\\OCSEFTP01\prod\Kundin\ssrca";   // incident
@@ -72,7 +74,7 @@ const validateCustomRequest = function (request) {
 };
 
 module.exports.doInsert = function (request) {
-    return sendServiceNowRequest(request)
+    return sendServiceNowRequest(request);
 };
 
 const sendServiceNowRequest = function (request) {
@@ -84,9 +86,10 @@ const sendServiceNowRequest = function (request) {
 const createSoapClient = function (user, password, uri) {
     let auth = "Basic " + new Buffer(`${user}:${password}`).toString("base64");
     return new Promise((resolve, reject) => {
-        soap.createClient(uri, {wsdl_headers: {Authorization: auth}}, (wsdlError, client) => {
-            if (wsdlError) {
-                return reject(wsdlError);
+        soap.createClient(uri, {wsdl_headers: {Authorization: auth}}, (error, client) => {
+            if (error) {
+                log.error(error);
+                return reject(error);
             } else {
                 client.setSecurity(new soap.BasicAuthSecurity(user, password));
                 return resolve(client)
@@ -97,11 +100,14 @@ const createSoapClient = function (user, password, uri) {
 
 const doServiceNowInsert = function (client, request) {
     return new Promise((resolve, reject) => {
-        client.insert(request, (soapError, soapResponse) => {
-            if (soapError) {
-                return reject(soapError)
+        if (!client)
+            return reject('no client for request');
+        client.insert(request, (error, response) => {
+            if (error) {
+                log.error(error);
+                return reject(error)
             } else {
-                return resolve(soapResponse)
+                return resolve(response)
             }
         });
     });
@@ -121,6 +127,7 @@ const getSoapCredentials = function () {
                 log.info('saving soap credentials into memory');
                 cachedCredentials = credentials;
             }
+            log.info(credentials);
             return credentials
         });
 };

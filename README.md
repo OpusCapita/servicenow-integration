@@ -13,13 +13,14 @@ params: none
 
 url: /api/insert
 method: POST
+content-type: application/json
 params: body as JSON
 
 ####body-format-example:
 
     {
-    'shortDesc': 'shortDesc',
-    'longDesc': 'longDesc',
+    'shortdesc': 'shortDesc',
+    'longdesc': 'longDesc',
     'prio': 1 | 2 | 3,
     'customer': customerID // eg: OpusCapita
     'service' : myService
@@ -30,5 +31,11 @@ params: body as JSON
 ####group-id-mapping
 The values inside the request.assignmentgroup are mapped into servicenow-assignment groups:
 
+`
 '1': 'OC CS GLOB Service Desk AM'
 '2': 'OC CS GLOB Service Desk'
+`
+
+#### example call via curl
+`curl localhost:3016/api/insert -X POST -H 'Content-Type: application/json' -d '{   "shortdesc" : "
+Kurz",   "longdesc" : "Lang",   "prio" : "5",   "customer" : "OpusCapita",   "service" : "iPost Sweden",   "assignmentgroup" : "1" }'`

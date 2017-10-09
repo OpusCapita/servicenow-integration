@@ -1,14 +1,16 @@
 'use strict';
 const config = require('ocbesbn-config');
 const Logger = require('ocbesbn-logger'); // Logger
-const helper = require('./helper');
-const fs = require('fs');
 const soap = require('soap');
+const fs = require('fs');
 const log = new Logger({
     context: {
         serviceName: 'servicenow-integration'
     }
 });
+
+const helper = require('./helper');
+const circle_ci = require('./circle_ci_api');
 const servicenow_insert = require('./insert');
 
 module.exports = function (app, db, config) {
@@ -28,19 +30,18 @@ const doHealthCheck = function () {
         .then(healthChecks => filterBySev(healthChecks))                // filtering based on sev
         // TODO: check for duplicates on serviceNow
         // TODO: how to get non-EVM-Ticket-ID ??!
-        // TODO: what if db is down and existing tickets cant be checked?
-        // .then(healthChecks => filterByExistingIssues(healthChecks))
         .then(healthChecks =>
             Promise.all(
                 healthChecks.map(
-                    check => createHealthIssue(check)                   // creating issues
+                    check => createHealthIssue(check)
+                        .catch(error => `issue for service ${check.serviceName} could not be created: \n${error}`)
                 )
             )
         );  // returns list of insert-responses(json)
 };
 
 const analyseHealthChecks = function (healthChecks) {
-    let filteredIssues = [];
+    let serviceDataSets = [];
     for (let currentService of healthChecks) {
         try {
             let serviceName = currentService[0].Service.Service;
@@ -57,24 +58,35 @@ const analyseHealthChecks = function (healthChecks) {
                 passed: passingChecks,
                 raw: currentService,
             };
-            filteredIssues.push(serviceData);
+            serviceDataSets.push(serviceData);
         } catch (e) {
             log.error(e);
         }
     }
-    return filteredIssues;
+    log.info(serviceDataSets)
+    return serviceDataSets;
 };
 
 const enrichWithDeploymentInfo = function (healthChecks) {
-    // TODO: getRecentBuilds().then(builds => ...
-    return Promise.all(
-        healthChecks.map(
-            check => {
-                check['deploying'] = 0; // TODO: use circle ci api
-                return check;
-            }
-        )
-    )
+    const deploymentStatus = ['queued', 'scheduled', 'running'];
+    return circle_ci.getRecentBuilds()
+        .catch(error => {
+            log.error(`Could not fetch circle-ci builds: ${JSON.stringify(error)}`); // TODO; escalation?
+            return [];
+        })
+        .then(recentBuilds =>
+            Promise.all(
+                healthChecks.map(
+                    check => {
+                        let deployments = recentBuilds
+                            .filter(build => build.reponame === check.serviceName)
+                            .filter(build => deploymentStatus.includes(build.status))
+                        check['deploying'] = deployments ? deployments.length : 0;
+                        return check;
+                    }
+                )
+            )
+        );
 };
 
 const enrichWithSevInfo = function (healthChecks) {
@@ -164,7 +176,7 @@ let createEscalationIssue = function (escalation) {
         u_det_descr: createEscalationIssueBody(escalation),
         u_customer_id: 'OpusCapita' // TODO: what id are we using here?
     };
-    servicenow_insert.doInsert(request);
+    return servicenow_insert.doInsert(request);
 };
 
 let createEscalationIssueSubject = function (escalation) {

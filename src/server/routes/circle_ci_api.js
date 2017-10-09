@@ -4,7 +4,7 @@ const api_key = 'Completely Secret!!!';
 const request = require('request');
 const zlib = require('zlib');
 
-const getRecentBuilds = function () {
+module.exports.getRecentBuilds = function () {
     return getRequestOptions(`${base_api_url}recent-builds?circle-token=${api_key}`)
         .then(options => requestWithEncoding(options))
         .catch(error => {
@@ -16,15 +16,14 @@ const getRecentBuilds = function () {
 const getRequestOptions = function (url) {
     return new Promise((resolve, reject) => {
         return resolve({
-                url: url,
-                headers: {
-                    "accept-charset": "utf-8;",
-                    "accept": "text/html",
-                    "user-agent": "YouDontValidateMeAnyway",
-                    "accept-encoding": "gzip",
-                }
+            url: url,
+            headers: {
+                "accept-charset": "utf-8;",
+                "accept": "text/html",
+                "user-agent": "YouDontValidateMeAnyway",
+                "accept-encoding": "gzip",
             }
-        );
+        });
     });
 };
 
@@ -53,23 +52,9 @@ const requestWithEncoding = function (options) {
                 }
             });
         });
-
         req.on('error', function (error) {
             return reject(error);
         });
     })
 };
 
-const convert2JSON = function (string) {
-    return new Promise((resolve, reject) => {
-        try {
-            return resolve(JSON.parse(string));
-        } catch (e) {
-            return reject(e);
-        }
-    });
-};
-
-getRecentBuilds()
-    .then(response => convert2JSON(response))
-    .then(result => console.log(JSON.stringify(result)));
