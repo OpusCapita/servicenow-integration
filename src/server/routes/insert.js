@@ -127,7 +127,6 @@ const getSoapCredentials = function () {
                 log.info('saving soap credentials into memory');
                 cachedCredentials = credentials;
             }
-            log.info(credentials);
             return credentials
         });
 };

@@ -22,25 +22,19 @@ db.init({
     data: {
         addTestData: true
     }
-})
-    .then((db) => server.init({
-        server: {
-            port: 3016,
-            mode: server.Server.Mode.Dev,
-            events: {
-                onStart: () => config.init({})
-                    .then(() => log.info('Server up and running!'))
-                    .catch((it) => {
-                        log.error(it);
-                        log.error('Could not initiate service-now-credentials')
-                    })
-            }
-        },
-        routes: {
-            dbInstance: db
+}).then(db => server.init({
+    server: {
+        port: 3016,
+        mode: server.Server.Mode.Dev,
+        events: {
+            onStart: () => config.init({})
+                .then(() => log.info('Server up and running!'))
         }
-    }))
-    .catch((e) => {
-        server.end();
-        throw e;
-    });
+    },
+    routes: {
+        dbInstance: db
+    }
+})).catch(error => {
+    server.end();
+    throw error;
+});

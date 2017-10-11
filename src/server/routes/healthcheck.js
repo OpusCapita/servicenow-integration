@@ -16,20 +16,22 @@ const servicenow_insert = require('./insert');
 module.exports = function (app, db, config) {
     app.get('/', (req, res) => res.send('I am in insert.js'));
     app.get('/api/health-checks',
-        (req, res) => doHealthCheck()
+        (req, res) => module.exports.doHealthCheck()
             .then(result => res.send(result))
             .catch(error => res.status(500).send(error))
     );
 };
 
-const doHealthCheck = function () {
+module.exports.doHealthCheck = function () {
     return getServiceHealth()
         .then(healthChecks => analyseHealthChecks(healthChecks))        // grouping by status and summing
         .then(healthChecks => enrichWithDeploymentInfo(healthChecks))   // check for circle ci deployment
         .then(healthChecks => enrichWithSevInfo(healthChecks))          // use enriched healthChecks to determine sev-state
         .then(healthChecks => filterBySev(healthChecks))                // filtering based on sev
-        // TODO: check for duplicates on serviceNow
-        // TODO: how to get non-EVM-Ticket-ID ??!
+        .catch(error => {
+            log.error(error); // TODO: escalation?
+            return [];
+        })
         .then(healthChecks =>
             Promise.all(
                 healthChecks.map(
@@ -37,7 +39,10 @@ const doHealthCheck = function () {
                         .catch(error => `issue for service ${check.serviceName} could not be created: \n${error}`)
                 )
             )
-        );  // returns list of insert-responses(json)
+        ).then(createdIssues => {
+            log.info(createdIssues);
+            return createdIssues;
+        })
 };
 
 const analyseHealthChecks = function (healthChecks) {
@@ -70,6 +75,7 @@ const analyseHealthChecks = function (healthChecks) {
 const enrichWithDeploymentInfo = function (healthChecks) {
     const deploymentStatus = ['queued', 'scheduled', 'running'];
     return circle_ci.getRecentBuilds()
+        .then(it => JSON.parse(it))
         .catch(error => {
             log.error(`Could not fetch circle-ci builds: ${JSON.stringify(error)}`); // TODO; escalation?
             return [];
@@ -108,7 +114,7 @@ const filterBySev = function (healthChecks) {
 const createHealthIssue = function (check) {
     let request = {
         u_short_descr: createHealthIssueSubject(check),
-        u_caller_id: 'TUBBEST1',    // Whos ocnet-id should be used?
+        u_caller_id: 'bnp',    // Whos ocnet-id should be used?
         u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
         //u_service: 'iPost Sweden',  // service needed?
         u_priority: check['sev'],
@@ -168,7 +174,7 @@ let createEscalationIssue = function (escalation) {
     log.info("creating escalation issue!");
     let request = {
         u_short_descr: createEscalationIssueSubject(escalation),
-        u_caller_id: 'TUBBEST1',    // Whos ocnet-id should be used?
+        u_caller_id: 'bnp',    // Whos ocnet-id should be used?
         u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
         //u_service: 'iPost Sweden',  // service needed?
         u_assignment_group: 'OC CS GLOB Service Desk AM',
