@@ -9,8 +9,8 @@ const log = new Logger({
     }
 });
 
-const helper = require('./helper');
-const circle_ci = require('./circle_ci_api');
+const helper = require('./utility/helper');
+const circle_ci = require('./utility/circle_ci_api');
 const servicenow_insert = require('./insert');
 
 module.exports = function (app, db, config) {
@@ -49,7 +49,7 @@ const analyseHealthChecks = function (healthChecks) {
     let serviceDataSets = [];
     for (let currentService of healthChecks) {
         try {
-            let serviceName = currentService[0].Service.Service;
+            const serviceName = currentService[0].Service.Service;
             let totalChecks = 0;
             let passingChecks = 0;
             for (let currentNode of currentService) {
@@ -57,8 +57,9 @@ const analyseHealthChecks = function (healthChecks) {
                 totalChecks += currentNode.Checks.length;
                 passingChecks += groupedChecks.get('passing') === null ? 0 : groupedChecks.get('passing').length;
             }
-            let serviceData = {
+            const serviceData = {
                 serviceName: serviceName,
+                environment: process.env.NODE_ENV ? process.env.NODE_ENV : 'unknown env',
                 total: totalChecks,
                 passed: passingChecks,
                 raw: currentService,
@@ -84,7 +85,7 @@ const enrichWithDeploymentInfo = function (healthChecks) {
             Promise.all(
                 healthChecks.map(
                     check => {
-                        let deployments = recentBuilds
+                        const deployments = recentBuilds
                             .filter(build => build.reponame === check.serviceName)
                             .filter(build => deploymentStatus.includes(build.status))
                         check['deploying'] = deployments ? deployments.length : 0;
@@ -99,8 +100,8 @@ const enrichWithSevInfo = function (healthChecks) {
     return Promise.all(
         healthChecks.map(
             check => {
-                check['sev'] = getSevState(check);
-                check['sev'] = 2;
+                check['status'] = getSevState(check);
+                check['status'] = {sev: 2, reason: 'testing'};
                 return check;
             }
         )
@@ -108,21 +109,26 @@ const enrichWithSevInfo = function (healthChecks) {
 };
 
 const filterBySev = function (healthChecks) {
-    return healthChecks.filter(it => it['sev'] > 0);
+    return healthChecks.filter(it => it['status']['sev'] > 0);
 };
 
 const createHealthIssue = function (check) {
-    let request = {
-        u_short_descr: createHealthIssueSubject(check),
-        u_caller_id: 'bnp',    // Whos ocnet-id should be used?
-        u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
-        //u_service: 'iPost Sweden',  // service needed?
-        u_priority: check['sev'],
-        u_assignment_group: 'OC CS GLOB Service Desk AM',
-        u_det_descr: createHealthIssueBody(check),
-        u_customer_id: 'OpusCapita' // TODO: what id are we using here?
-    };
-    return servicenow_insert.doInsert(request);
+    try {
+        const request = {
+            u_short_descr: createHealthIssueSubject(check),
+            u_caller_id: 'bnp',    // Whos ocnet-id should be used?
+            u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
+            //u_service: 'iPost Sweden',  // service needed?
+            u_priority: check['status']['sev'],
+            u_assignment_group: 'OC CS GLOB Service Desk AM',
+            u_det_descr: createHealthIssueBody(check),
+            u_customer_id: 'OpusCapita' // TODO: what id are we using here?
+        };
+        return servicenow_insert.doInsert(request);
+    } catch (error) {
+        log.error(error);
+        return error.message;
+    }
 };
 
 const createHealthIssueSubject = function (serviceData) {
@@ -130,7 +136,7 @@ const createHealthIssueSubject = function (serviceData) {
 };
 
 const createHealthIssueBody = function (serviceData) {
-    serviceData['raw'] = JSON.stringify(serviceData['raw']);
+    serviceData['raw'] = JSON.stringify(serviceData['raw'], null, 3);
     return helper.renderTemplate(`${__dirname}/templates/health_body.njk`, serviceData);
 };
 
@@ -170,26 +176,31 @@ const getServiceList = function () {
         })
 };
 
-let createEscalationIssue = function (escalation) {
+const createEscalationIssue = function (escalation) {
     log.info("creating escalation issue!");
-    let request = {
-        u_short_descr: createEscalationIssueSubject(escalation),
-        u_caller_id: 'bnp',    // Whos ocnet-id should be used?
-        u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
-        //u_service: 'iPost Sweden',  // service needed?
-        u_assignment_group: 'OC CS GLOB Service Desk AM',
-        u_priority: 1,
-        u_det_descr: createEscalationIssueBody(escalation),
-        u_customer_id: 'OpusCapita' // TODO: what id are we using here?
-    };
-    return servicenow_insert.doInsert(request);
+    try {
+        const request = {
+            u_short_descr: createEscalationIssueSubject(escalation),
+            u_caller_id: 'bnp',    // Whos ocnet-id should be used?
+            u_error_type: "\\OCSEFTP01\prod\Kundin\ssrca",	// List of error_types?
+            //u_service: 'iPost Sweden',  // service needed?
+            u_assignment_group: 'OC CS GLOB Service Desk AM',
+            u_priority: 1,
+            u_det_descr: createEscalationIssueBody(escalation),
+            u_customer_id: 'OpusCapita' // TODO: what id are we using here?
+        };
+        return servicenow_insert.doInsert(request);
+    } catch (error){
+        log.error(error);
+        return error.message;
+    }
 };
 
-let createEscalationIssueSubject = function (escalation) {
+const createEscalationIssueSubject = function (escalation) {
     return helper.renderTemplate(`${__dirname}/templates/escalation_subject.njk`, escalation);
 };
 
-let createEscalationIssueBody = function (escalation) {
+const createEscalationIssueBody = function (escalation) {
     return helper.renderTemplate(`${__dirname}/templates/escalation_body.njk`, escalation);
 };
 

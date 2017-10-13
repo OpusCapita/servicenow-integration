@@ -1,6 +1,6 @@
 'use strict';
 const base_api_url = 'https://circleci.com/api/v1.1/';
-const api_key = 'Completely Secret!!!';
+const api_key = 'bd36af267512029834d25aa07044c484ad0ddc82';
 const request = require('request');
 const zlib = require('zlib');
 

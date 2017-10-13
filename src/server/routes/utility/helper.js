@@ -19,7 +19,6 @@ module.exports.groupBy = function (list, keyGetter) {
     return map;
 };
 
-
 module.exports.renderTemplate = function (template, data) {
     nunjucks.configure({autoescape: false});
     return nunjucks.render(template, data);

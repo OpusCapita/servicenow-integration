@@ -130,4 +130,3 @@ const getSoapCredentials = function () {
             return credentials
         });
 };
-
