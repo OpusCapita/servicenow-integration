@@ -1,8 +1,21 @@
 'use strict';
 const base_api_url = 'https://circleci.com/api/v1.1/';
-const api_key = 'bd36af267512029834d25aa07044c484ad0ddc82';
+const api_key = 'SECRET!'; //TODO: add2ENV
 const request = require('request');
 const zlib = require('zlib');
+
+module.exports.belongsToCurrentEnv = function (build) {
+    const environment = process.env.NODE_ENV;
+    const branch = build.branch;
+    switch (environment) {
+        case 'development':
+            return branch !== 'main';
+        case 'production':
+            return branch === 'main';
+        default: // TODO: stage?
+            return false;
+    }
+};
 
 module.exports.getRecentBuilds = function () {
     return getRequestOptions(`${base_api_url}recent-builds?circle-token=${api_key}`)

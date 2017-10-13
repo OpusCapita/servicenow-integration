@@ -34,9 +34,7 @@ const handleInsertByApi = function (req) {
 
 const validateCustomRequest = function (request) {
     const mandatoryFields = ['shortdesc', 'longdesc', 'prio', 'customer', 'service', 'assignmentgroup'];
-    const assignmentGroupMapping = {
-        'plattform': 'OC CS GLOB Service Desk AM',
-    };
+    const assignmentGroupMapping = require('./utility/groupMapping');
     const result = {};
     let mandatory_errors = mandatoryFields.filter(
         field => Object.keys(request).indexOf(field) === -1
@@ -65,8 +63,7 @@ const validateCustomRequest = function (request) {
     result['u_short_descr'] = request['shortdesc'];
     result['u_det_descr'] = request['longdesc'];
     result['u_service'] = request['service'];
-    // TODO: caller_id should be technical account
-    result['u_caller_id'] = 'TUBBEST1';
+    result['u_caller_id'] = 'bnp';
     result['u_error_type'] = "\\OCSEFTP01\prod\Kundin\ssrca";   // incident
 
     log.info(`Translated custom-request: ${JSON.stringify(result)}`);

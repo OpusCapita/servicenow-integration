@@ -32,14 +32,15 @@ module.exports.doHealthCheck = function () {
             log.error(error); // TODO: escalation?
             return [];
         })
-        .then(healthChecks =>
-            Promise.all(
+        .then(healthChecks => {
+            log.info(`data for tickets: ${JSON.stringify(healthChecks)}`);
+            return Promise.all(
                 healthChecks.map(
                     check => createHealthIssue(check)
                         .catch(error => `issue for service ${check.serviceName} could not be created: \n${error}`)
                 )
-            )
-        ).then(createdIssues => {
+            );
+        }).then(createdIssues => {
             log.info(createdIssues);
             return createdIssues;
         })
@@ -69,7 +70,7 @@ const analyseHealthChecks = function (healthChecks) {
             log.error(e);
         }
     }
-    log.info(serviceDataSets)
+    log.info(`consul-info: ${JSON.stringify(serviceDataSets)}`);
     return serviceDataSets;
 };
 
@@ -88,6 +89,7 @@ const enrichWithDeploymentInfo = function (healthChecks) {
                         const deployments = recentBuilds
                             .filter(build => build.reponame === check.serviceName)
                             .filter(build => deploymentStatus.includes(build.status))
+                            .filter(build => circle_ci.belongsToCurrentEnv(build))
                         check['deploying'] = deployments ? deployments.length : 0;
                         return check;
                     }
@@ -122,7 +124,7 @@ const createHealthIssue = function (check) {
             u_priority: check['status']['sev'],
             u_assignment_group: 'OC CS GLOB Service Desk AM',
             u_det_descr: createHealthIssueBody(check),
-            u_customer_id: 'OpusCapita' // TODO: what id are we using here?
+            u_customer_id: 'OpusCapita'
         };
         return servicenow_insert.doInsert(request);
     } catch (error) {
@@ -187,10 +189,10 @@ const createEscalationIssue = function (escalation) {
             u_assignment_group: 'OC CS GLOB Service Desk AM',
             u_priority: 1,
             u_det_descr: createEscalationIssueBody(escalation),
-            u_customer_id: 'OpusCapita' // TODO: what id are we using here?
+            u_customer_id: 'OpusCapita'
         };
         return servicenow_insert.doInsert(request);
-    } catch (error){
+    } catch (error) {
         log.error(error);
         return error.message;
     }
