@@ -1,6 +1,6 @@
 'use strict';
 const base_api_url = 'https://circleci.com/api/v1.1/';
-const api_key = 'SECRET!'; //TODO: add2ENV
+const api_key = process.env.CIRCLE_TOKEN;
 const request = require('request');
 const zlib = require('zlib');
 

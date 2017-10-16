@@ -7,7 +7,6 @@ const log = new Logger({
         serviceName: 'servicenow-integration'
     }
 });
-let cachedCredentials = [];
 
 module.exports = function (app, db, config) {
     app.get('/',
@@ -27,7 +26,7 @@ const handleInsertByApi = function (req) {
             return resolve(sendServiceNowRequest(request));
         } catch (error) {
             log.error(error);
-            return reject(error.message);
+            return reject(error);
         }
     });
 };
@@ -43,18 +42,18 @@ const validateCustomRequest = function (request) {
     let errors = [];
     // prio
     if (!request['prio'] || !['1', '2', '3'].includes(request['prio']))
-        errors.push(`Field prio not valid: ${request['prio']}. \nPlease use value out of [1,2,3]`);
+        errors.push(`field prio not valid: ${request['prio']}. \nPlease use value out of [1,2,3]`);
     else
         result['u_priority'] = request['prio'];
 
     // assignmentgroup
     if (!request['assignmentgroup'] || !assignmentGroupMapping[request['assignmentgroup']])
-        errors.push(`Field assignmentgroup could not be mapped internally. \nPlease use one of those: ${JSON.stringify(assignmentGroupMapping)}`);
+        errors.push(`field assignmentgroup could not be mapped internally. \nPlease use one of those: ${JSON.stringify(assignmentGroupMapping)}`);
     else
         result['u_assignment_group'] = assignmentGroupMapping[request['assignmentgroup']];
 
     // mapping missing mandatory fields to error-messages
-    mandatory_errors = mandatory_errors.map(error => `field ${error} is not valid: ${request[error]}`);
+    mandatory_errors = mandatory_errors.map(error => `field ${error} is mandatory`);
 
     let totalErrors = mandatory_errors.concat(errors);
     if (totalErrors.length > 0)
@@ -111,19 +110,7 @@ const doServiceNowInsert = function (client, request) {
 };
 
 const getSoapCredentials = function () {
-    return config.getProperty(['servicenow-api-user', 'servicenow-api-password', 'servicenow-api-uri'])
-        .catch(error => {
-            log.error(error);
-            if (cachedCredentials) {
-                log.info('taking soap credentials from memory');
-                return cachedCredentials;
-            }
-        })
-        .then(credentials => {
-            if (!cachedCredentials) {
-                log.info('saving soap credentials into memory');
-                cachedCredentials = credentials;
-            }
-            return credentials
-        });
+    return new Promise((resolve, reject) => {
+       return resolve([process.env.SN_USER, process.env.SN_PASSWORD, process.env.SN_URI]);
+    });
 };

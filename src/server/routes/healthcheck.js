@@ -18,7 +18,7 @@ module.exports = function (app, db, config) {
     app.get('/api/health-checks',
         (req, res) => module.exports.doHealthCheck()
             .then(result => res.send(result))
-            .catch(error => res.status(500).send(error))
+            .catch(error => res.status(500).json({error: error}))
     );
 };
 

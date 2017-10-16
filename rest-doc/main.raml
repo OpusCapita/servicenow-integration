@@ -1,19 +1,78 @@
 #%RAML 1.0
-title: Your Service Documentation
-description: Your Service Description
-version: 1.0.0
-baseUri: http://localhost
-mediaType:
-  - application/json
-protocols:
-  - http
-  - https
+version: v1
+title: ServiceNow Integration
+types:
+  errormessage:
+    type: object
+    properties:
+      error: string
+    example: !include examples/errormessage.raml
+  servicenow-post:
+    type: object
+    properties:
+      shortdesc:
+        type: string
+        required:  true
+      longdesc:
+        type: string
+        required: true
+      prio:
+        description: priority of the created ticket
+        type: integer
+        required: true
+        minimum: 1
+        maximum: 3
+      customer:
+        type: string
+        required: true
+      service:
+        type: string
+        required: true
+      assignmentgroup:
+        type: assignmentgroup
+        required: true
+    example: !include examples/servicenow-post.raml
+  inserterror:
+    type: string[]
+    example: !include examples/inserterror.raml
+  assignmentgroup:
+    type: string
+    description: group that will be mapped to servicenow assignmentgroup
+    enum: [plattform]
+  servicenow-response:
+    type: object
+    properties:
+      sys_id: string
+      table: string
+      display_name: string
+      display_value: string
+      status: string
+    example: !include examples/servicenow-response.raml
+/api/insert:
+  post:
+    body:
+      application/json:
+        type: servicenow-post
+    responses:
+      200:
+        description: servicenow-response send after successfull request.
+        body:
+          application/json:
+            type: servicenow-response
+      500:
+        description: simple json-object with th
+        body:
+          application/json:
+            type: errormessage
+/api/health-checks:
+  get:
+    responses:
+      200:
+          body:
+            application/json:
+              type: servicenow-response[]
+      500:
+        body:
+          application/json:
+            type: errormessage
 
-types: !include schemas/index.raml
-traits:
-    acceptLanguage: !include traits/acceptLanguage.raml
-    sendNotFound: !include traits/sendNotFound.raml
-
-/countries: !include resourceTypes/country.raml
-/currencies: !include resourceTypes/currency.raml
-/languages: !include resourceTypes/language.raml
