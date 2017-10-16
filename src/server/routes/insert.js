@@ -15,7 +15,7 @@ module.exports = function (app, db, config) {
     app.post('/api/insert',
         (req, res) => handleInsertByApi(req)
             .then(result => res.send(result))
-            .catch(error => res.status(500).send(error))
+            .catch(error => res.status(500).send({error: error}))
     );
 };
 
@@ -111,6 +111,6 @@ const doServiceNowInsert = function (client, request) {
 
 const getSoapCredentials = function () {
     return new Promise((resolve, reject) => {
-       return resolve([process.env.SN_USER, process.env.SN_PASSWORD, process.env.SN_URI]);
+        return resolve([process.env.SN_USER, process.env.SN_PASSWORD, process.env.SN_URI]);
     });
 };

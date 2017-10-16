@@ -18,7 +18,7 @@ module.exports = function (app, db, config) {
     app.get('/api/health-checks',
         (req, res) => module.exports.doHealthCheck()
             .then(result => res.send(result))
-            .catch(error => res.status(500).json({error: error}))
+            .catch(error => res.status(500).send({error: error}))
     );
 };
 
@@ -103,7 +103,7 @@ const enrichWithSevInfo = function (healthChecks) {
         healthChecks.map(
             check => {
                 check['status'] = getSevState(check);
-                check['status'] = {sev: 2, reason: 'testing'};
+                check['status'] = {sev: 2, reason: 'testing further'};
                 return check;
             }
         )
@@ -139,6 +139,8 @@ const createHealthIssueSubject = function (serviceData) {
 
 const createHealthIssueBody = function (serviceData) {
     serviceData['raw'] = JSON.stringify(serviceData['raw'], null, 3);
+
+    serviceData['timestamp'] = helper.getFormattedDateString();
     return helper.renderTemplate(`${__dirname}/templates/health_body.njk`, serviceData);
 };
 

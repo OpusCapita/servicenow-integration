@@ -1,6 +1,8 @@
 #%RAML 1.0
-version: v1
 title: ServiceNow Integration
+description: API to create tickets inside servicenow
+version: 1.0.0
+baseUri: http://localhost:3016
 types:
   errormessage:
     type: object
@@ -18,7 +20,7 @@ types:
         required: true
       prio:
         description: priority of the created ticket
-        type: integer
+        type: number
         required: true
         minimum: 1
         maximum: 3
@@ -32,21 +34,23 @@ types:
         type: assignmentgroup
         required: true
     example: !include examples/servicenow-post.raml
-  inserterror:
-    type: string[]
-    example: !include examples/inserterror.raml
   assignmentgroup:
     type: string
     description: group that will be mapped to servicenow assignmentgroup
-    enum: [plattform]
+    enum: plattform
   servicenow-response:
     type: object
     properties:
       sys_id: string
       table: string
       display_name: string
-      display_value: string
+      display_value:
+        type: string
+        description: EVN-numer of the created event-ticket
       status: string
+      incident:
+        type: string
+        description: OCIN-number of the created incident-ticket
     example: !include examples/servicenow-response.raml
 /api/insert:
   post:
@@ -55,12 +59,10 @@ types:
         type: servicenow-post
     responses:
       200:
-        description: servicenow-response send after successfull request.
         body:
           application/json:
             type: servicenow-response
       500:
-        description: simple json-object with th
         body:
           application/json:
             type: errormessage
@@ -75,4 +77,3 @@ types:
         body:
           application/json:
             type: errormessage
-
