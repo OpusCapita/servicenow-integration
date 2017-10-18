@@ -40,9 +40,6 @@ module.exports.doHealthCheck = function () {
                         .catch(error => `issue for service ${check.serviceName} could not be created: \n${error}`)
                 )
             );
-        }).then(createdIssues => {
-            log.info(createdIssues);
-            return createdIssues;
         })
 };
 
@@ -103,7 +100,6 @@ const enrichWithSevInfo = function (healthChecks) {
         healthChecks.map(
             check => {
                 check['status'] = getSevState(check);
-                check['status'] = {sev: 2, reason: 'testing further'};
                 return check;
             }
         )
