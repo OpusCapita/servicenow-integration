@@ -88,7 +88,7 @@ const createSoapClient = function (user, password, uri) {
                 return reject(error);
             } else {
                 client.setSecurity(new soap.BasicAuthSecurity(user, password));
-                return resolve(client)
+                return resolve(client);
             }
         });
     })
@@ -101,9 +101,9 @@ const doServiceNowInsert = function (client, request) {
         client.insert(request, (error, response) => {
             if (error) {
                 log.error(error);
-                return reject(error)
+                return reject(error);
             } else {
-                return resolve(response)
+                return resolve(response);
             }
         });
     });

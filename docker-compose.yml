@@ -6,7 +6,7 @@ services:
       - consul
       - registrator
       - redis
-    image: opuscapita/servicenow-integartion
+    image: opuscapita/servicenow-integration
     labels:
       SERVICE_NAME: 'servicenow-integration'
     environment:
@@ -43,7 +43,7 @@ services:
       - consul
 
   redis:
-    image: ocbesbn/redis:latest
+    image: opuscapita/redis:dev
     ports:
       - '6379:6379'
     environment:
