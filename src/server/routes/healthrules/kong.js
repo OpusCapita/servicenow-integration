@@ -1,5 +1,5 @@
 module.exports.exec = function (serviceData) {
-    let result = {};
+    let result = {sev: 0, reason: 'none'};
     if (serviceData.total !== serviceData.passed) {
         if (serviceData.passed === 0) {
             result.sev = 3;
