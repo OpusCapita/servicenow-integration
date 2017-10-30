@@ -1,8 +1,17 @@
 'use strict';
 const base_api_url = 'https://circleci.com/api/v1.1/';
-const api_key = process.env.CIRCLE_TOKEN;
+const config = require('ocbesbn-config');
 const request = require('request');
 const zlib = require('zlib');
+
+const Logger = require('ocbesbn-logger'); // Logger
+const log = new Logger({
+    context: {
+        serviceName: 'servicenow-integration'
+    }
+});
+
+let cachedApiKey;   // local var to store credentials in case of consul outage
 
 module.exports.belongsToCurrentEnv = function (build) {
     const environment = process.env.NODE_ENV;
@@ -18,7 +27,8 @@ module.exports.belongsToCurrentEnv = function (build) {
 };
 
 module.exports.getRecentBuilds = function () {
-    return getRequestOptions(`${base_api_url}recent-builds?circle-token=${api_key}`)
+    return getApiKey()
+        .then(api_key => getRequestOptions(`${base_api_url}recent-builds?circle-token=${api_key}`))
         .then(options => requestWithEncoding(options))
         .catch(error => {
             console.log(error);
@@ -43,7 +53,6 @@ const getRequestOptions = function (url) {
 const requestWithEncoding = function (options) {
     return new Promise((resolve, reject) => {
         let req = request.get(options);
-
         req.on('response', (response) => {
             let chunks = [];
             response.on('data', (part) => {
@@ -71,3 +80,21 @@ const requestWithEncoding = function (options) {
     })
 };
 
+let getApiKey = function () {
+    return config.getProperty('circle-ci-api-key')
+        .catch(error => {
+            log.error(error);
+            if (cachedApiKey) {
+                return Promise.resolve(cachedApiKey);
+            } else {
+                return Promise.reject('no consul-key, no cached-key');
+            }
+        })
+        .then(key => {
+            if (cachedApiKey === null || cachedApiKey !== key) {  // setting or replacing with new value
+                cachedApiKey = key;
+            }
+            return Promise.resolve(key);
+        })
+        .then(it => it);
+};

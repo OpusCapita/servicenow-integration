@@ -7,6 +7,7 @@ const log = new Logger({
         serviceName: 'servicenow-integration'
     }
 });
+let cachedSoapCredentials;
 
 module.exports = function (app, db, config) {
     app.get('/',
@@ -110,7 +111,20 @@ const doServiceNowInsert = function (client, request) {
 };
 
 const getSoapCredentials = function () {
-    return new Promise((resolve, reject) => {
-        return resolve([process.env.SN_USER, process.env.SN_PASSWORD, process.env.SN_URI]);
-    });
+    return config.getProperty(['servicenow-api-user', 'servicenow-api-password', 'servicenow-api-uri'])
+        .catch((error) => {
+            log.error(error);
+            if (cachedSoapCredentials) {
+                log.info('taking soap credentials from memory!');
+                return cachedSoapCredentials;
+            }
+        })
+        .then((credentials) => {
+            if (!cachedSoapCredentials) {
+                log.info('saving soap credentials into memory');
+                cachedSoapCredentials = credentials;
+            }
+            return credentials
+        })
+        .then(it => it);
 };

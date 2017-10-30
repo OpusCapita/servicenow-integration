@@ -1,8 +1,8 @@
 'use strict';
 const config = require('ocbesbn-config');
-const Logger = require('ocbesbn-logger'); // Logger
 const soap = require('soap');
 const fs = require('fs');
+const Logger = require('ocbesbn-logger'); // Logger
 const log = new Logger({
     context: {
         serviceName: 'servicenow-integration'
