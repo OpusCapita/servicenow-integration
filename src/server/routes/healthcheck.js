@@ -143,7 +143,7 @@ const createHealthIssueBody = function (serviceData) {
 
 const getSevState = function (serviceData) {
     let sevScript;
-    if (fs.existsSync(`${__dirname}/${serviceData.serviceName}.js`))
+    if (fs.existsSync(`${__dirname}/healthrules/${serviceData.serviceName}.js`))
         sevScript = require(`${__dirname}/healthrules/${serviceData.serviceName}.js`);
     else
         sevScript = require(`${__dirname}/healthrules/default.js`);
