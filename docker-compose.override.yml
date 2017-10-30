@@ -4,4 +4,5 @@ services:
     build: .
     volumes:
       - ./src:/home/node/servicenow-integration/src
+      - ./wiki:/home/node/servicenow-integration/wiki
     command: 'npm run dev'
