@@ -1,6 +1,6 @@
 module.exports.exec = function (serviceData) {
     let result = {sev: 0, reason: 'none'};
-    if (serviceData.total !== serviceData.passed) {
+    if (serviceData.total !== serviceData.passed || serviceData.total === 0) {
         if (serviceData.passed === 0) {
             result.sev = 3;
             result.reason = 'service down'
