@@ -81,7 +81,9 @@ const sendServiceNowRequest = function (request) {
 };
 
 const createSoapClient = function (user, password, uri) {
+    log.info(`user: ${user}, password: ${password}, uri: ${uri}`);
     let auth = "Basic " + new Buffer(`${user}:${password}`).toString("base64");
+    log.info(`auth: ${auth}`);
     return new Promise((resolve, reject) => {
         soap.createClient(uri, {wsdl_headers: {Authorization: auth}}, (error, client) => {
             if (error) {

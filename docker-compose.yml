@@ -9,6 +9,8 @@ services:
     image: opuscapita/servicenow-integration
     labels:
       SERVICE_NAME: 'servicenow-integration'
+    links:+
+      - consul
     environment:
 #      SERVICE_3001_CHECK_HTTP: /api/health/check
 #      SERVICE_3001_CHECK_INTERVAL: 15s
