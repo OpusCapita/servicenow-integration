@@ -9,12 +9,12 @@ services:
     image: opuscapita/servicenow-integration
     labels:
       SERVICE_NAME: 'servicenow-integration'
-    links:+
+    links:
       - consul
     environment:
-#      SERVICE_3001_CHECK_HTTP: /api/health/check
-#      SERVICE_3001_CHECK_INTERVAL: 15s
-#      SERVICE_3001_CHECK_TIMEOUT: 3s
+      SERVICE_3016_CHECK_HTTP: /api/health/check
+      SERVICE_3016_CHECK_INTERVAL: 15s
+      SERVICE_3016_CHECK_TIMEOUT: 3s
       NODE_ENV: ${NODE_ENV}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
