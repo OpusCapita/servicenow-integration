@@ -16,19 +16,16 @@ module.exports = function (app, db, config) {
     app.post('/api/insert',
         (req, res) => handleInsertByApi(req)
             .then(result => res.send(result))
-            .catch(error => res.status(500).send({error: error}))
+            .catch(error => {
+                res.json(error.toString());
+            })
     );
 };
 
 const handleInsertByApi = function (req) {
     return new Promise((resolve, reject) => {
-        try {
-            let request = validateCustomRequest(req.body);
-            return resolve(sendServiceNowRequest(request));
-        } catch (error) {
-            log.error(error);
-            return reject(error);
-        }
+        let request = validateCustomRequest(req.body);
+        return resolve(sendServiceNowRequest(request));
     });
 };
 
@@ -42,7 +39,7 @@ const validateCustomRequest = function (request) {
 
     let errors = [];
     // prio
-    if (!request['prio'] || !['1', '2', '3'].includes(request['prio']))
+    if (!request['prio'] || !['1', '2', '3', 1, 2, 3].includes(request['prio']))
         errors.push(`field prio not valid: ${request['prio']}. \nPlease use value out of [1,2,3]`);
     else
         result['u_priority'] = request['prio'];
@@ -81,7 +78,7 @@ const sendServiceNowRequest = function (request) {
 };
 
 const createSoapClient = function (user, password, uri) {
-    log.info(`user: ${user}, password: ${password}, uri: ${uri}`);
+    //log.info(`user: ${user}, password: ${password}, uri: ${uri}`);
     let auth = "Basic " + new Buffer(`${user}:${password}`).toString("base64");
     log.info(`auth: ${auth}`);
     return new Promise((resolve, reject) => {
