@@ -15,7 +15,7 @@ log.redirectConsoleOut(); // Force anyone using console outputs into Logger form
 db.init({
     mode: db.Mode.Dev,
     retryTimeout: 1000,
-    retryCount: 10,
+    retryCount: 25,
     consul: {
         host: 'consul'
     },

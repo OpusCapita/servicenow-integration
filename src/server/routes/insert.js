@@ -59,7 +59,7 @@ const validateCustomRequest = function (request) {
 
     result['u_short_descr'] = request['shortdesc'];
     result['u_det_descr'] = request['longdesc'];
-    result['u_service'] = request['service'];
+    // result['u_service'] = request['service'];
     result['u_caller_id'] = 'bnp';
     result['u_error_type'] = "\\OCSEFTP01\prod\Kundin\ssrca";   // incident
 

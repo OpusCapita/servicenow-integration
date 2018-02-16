@@ -32,10 +32,10 @@ params: body as JSON
 The values inside the request.assignmentgroup are mapped into servicenow-assignment groups:
 
 `
-'1': 'OC CS GLOB Service Desk AM'
-'2': 'OC CS GLOB Service Desk'
+'plattform_am': 'OC CS GLOB Service Desk AM'
+'plattform': 'OC CS GLOB Service Desk'
 `
 
 #### example call via curl
 `curl localhost:3016/api/insert -X POST -H 'Content-Type: application/json' -d '{   "shortdesc" : "
-Kurz",   "longdesc" : "Lang",   "prio" : "5",   "customer" : "OpusCapita",   "service" : "iPost Sweden",   "assignmentgroup" : "1" }'`
+Kurz",   "longdesc" : "Lang",   "prio" : "5",   "customer" : "OpusCapita",   "service" : "iPost Sweden",   "assignmentgroup" : "plattform" }'`
