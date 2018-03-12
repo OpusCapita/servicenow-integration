@@ -43,6 +43,7 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock
     depends_on:
       - consul
+    restart: on-failure
 
   redis:
     image: opuscapita/redis:dev
