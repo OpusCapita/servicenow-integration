@@ -26,7 +26,10 @@
       "populate-test-data": "true"
     },
     "oc-consul-injection": {
-      "redis/password": "${SECRET_:env_REDIS}"
+      "redis/password": "${SECRET_:env_REDIS}",
+      "servicenow-api-user" : "${SECRET_:env_SN_USER}",
+      "servicenow-api-password" : "${SECRET_:env_SN_PASSWORD}",
+      "servicenow-api-uri" : "${SECRET_:env_SN_URI}"
     }
   }
 }
