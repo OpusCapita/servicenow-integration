@@ -30,7 +30,7 @@ const handleInsertByApi = function (req) {
 };
 
 const validateCustomRequest = function (request) {
-    const mandatoryFields = ['shortdesc', 'longdesc', 'prio', 'customer', 'service', 'assignmentgroup'];
+    const mandatoryFields = ['shortdesc', 'longdesc', 'prio', 'customer', 'assignmentgroup'];
     const assignmentGroupMapping = require('./utility/groupMapping');
     const result = {};
     let mandatory_errors = mandatoryFields.filter(
