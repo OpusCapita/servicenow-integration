@@ -63,6 +63,10 @@ const validateCustomRequest = function (request) {
     result['u_caller_id'] = 'bnp';
     result['u_error_type'] = "\\OCSEFTP01\prod\Kundin\ssrca";   // incident
 
+    if(request['ciid']){
+        result['u_ci'] = request['ciid'];
+    }
+
     log.info(`Translated custom-request: ${JSON.stringify(result)}`);
     return result;
 };
