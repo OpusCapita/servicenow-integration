@@ -30,7 +30,7 @@ const handleInsertByApi = function (req) {
 };
 
 const validateCustomRequest = function (request) {
-    const mandatoryFields = ['shortdesc', 'longdesc', 'prio', 'customer', 'service', 'assignmentgroup'];
+    const mandatoryFields = ['shortdesc', 'longdesc', 'prio', 'customer', 'assignmentgroup'];
     const assignmentGroupMapping = require('./utility/groupMapping');
     const result = {};
     let mandatory_errors = mandatoryFields.filter(
@@ -62,6 +62,10 @@ const validateCustomRequest = function (request) {
     // result['u_service'] = request['service'];
     result['u_caller_id'] = 'bnp';
     result['u_error_type'] = "\\OCSEFTP01\prod\Kundin\ssrca";   // incident
+
+    if(request['ciid']){
+        result['u_ci'] = request['ciid'];
+    }
 
     log.info(`Translated custom-request: ${JSON.stringify(result)}`);
     return result;
