@@ -1,8 +1,8 @@
 'use strict';
 
-const server = require('ocbesbn-web-init'); // Web server
-const db = require('ocbesbn-db-init'); // Database
-const config = require('ocbesbn-config');
+const server = require('@opuscapita/web-init'); // Web server
+const db = require('@opuscapita/db-init'); // Database
+const config = require('@opuscapita/config');
 const Logger = require('ocbesbn-logger'); // Logger
 const log = new Logger({
     context: {
@@ -27,9 +27,12 @@ db.init({
         port: 3016,
         mode: server.Server.Mode.Dev,
         events: {
-            onStart: () => config.init({})
-                .then(() => log.info('Server up and running!'))
-        }
+            onStart: async () => {
+                await config.init({});
+                await log.info('Server up and running!');
+            }
+        },
+        enableBouncer: false
     },
     routes: {
         dbInstance: db
