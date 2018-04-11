@@ -1,5 +1,4 @@
 'use strict';
-
 const server = require('@opuscapita/web-init'); // Web server
 const db = require('@opuscapita/db-init'); // Database
 const config = require('@opuscapita/config');
