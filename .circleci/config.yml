@@ -41,7 +41,7 @@ jobs:
           command: "chmod +x ./.circleci/bp_prepare.sh ; ./.circleci/bp_prepare.sh"
       - run:
           name: "Build Base Image"
-          command: "chmod +x ./.circleci/bp_build_base.sh ; ./.circleci/bp_build_base.sh"
+          command: "node ../buildprocess/bp_build_base.js opuscapita/$CIRCLE_PROJECT_REPONAME "
 workflows:
   version: 2
   commit:
