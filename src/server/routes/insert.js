@@ -15,9 +15,9 @@ module.exports = function (app, db, config) {
     );
     app.post('/api/insert',
         (req, res) => handleInsertByApi(req)
-            .then(result => res.send(result))
+            .then(result => res.status(200).json(result))
             .catch(error => {
-                res.json(error.toString());
+                res.status(400).json(error);
             })
     );
 };
