@@ -1,3 +1,6 @@
-find ./.circleci -type f -name *.sh -exec chmod 744 {} +
-./.circleci/bp_downloader.sh
-./.circleci/bp_tester.sh
+git clone https://github.com/OpusCapita/duriel.git -b st_dev ../buildprocess
+cd ../buildprocess
+npm install
+npm test
+mv junit ~/build/junit
+cd ~/build
