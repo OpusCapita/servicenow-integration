@@ -9,7 +9,7 @@ const log = new Logger({
 const groupMappings = require('./utility/groupMapping');
 
 module.exports = function (app, db, config) {
-    app.post('/api/settings/assignmentgroups',
+    app.get('/api/settings/assignmentgroups',
         (req, res) => {
             try {
                 res.status(200).json(
