@@ -3,7 +3,7 @@ const config = require('@opuscapita/config');
 const Logger = require('ocbesbn-logger'); // Logger
 const soap = require('soap');
 const log = new Logger({
-    context: {
+    context: { 
         serviceName: 'servicenow-integration'
     }
 });
