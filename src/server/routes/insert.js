@@ -63,9 +63,13 @@ const validateCustomRequest = function (request) {
     result['u_caller_id'] = 'bnp';
     result['u_error_type'] = "\\OCSEFTP01\prod\Kundin\ssrca";   // incident
 
-    if(request['ciid']){
-        result['u_ci'] = request['ciid'];
-    }
+    // TODO: fix it! Remove hardcoding and add params to API
+    result['u_service'] = "Business Network Portal";
+    result['u_bsc'] = "Businessnetwork Portal";
+
+    // if(request['ciid']){
+    //     result['u_ci'] = request['ciid'];
+    // }
 
     log.info(`Translated custom-request: ${JSON.stringify(result)}`);
     return result;
