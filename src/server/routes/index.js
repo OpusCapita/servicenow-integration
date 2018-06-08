@@ -3,6 +3,7 @@
 const Promise = require('bluebird');
 const insert = require("./insert");
 const healthcheck = require('./healthcheck');
+const restapi = require('./restapi');
 
 /**
  * Initializes all routes for RESTful access.
@@ -16,5 +17,6 @@ const healthcheck = require('./healthcheck');
 module.exports.init = function (app, db, config) {
     insert(app, db, config);
     healthcheck(app, db, config);
+    restapi(app, db, config);
     return Promise.resolve();
 };

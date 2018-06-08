@@ -1,6 +1,6 @@
 'use strict';
 const base_api_url = 'https://circleci.com/api/v1.1/';
-const config = require('ocbesbn-config');
+const config = require('@opuscapita/config');
 const request = require('request');
 const zlib = require('zlib');
 

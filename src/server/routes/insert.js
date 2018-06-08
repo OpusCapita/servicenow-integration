@@ -1,5 +1,5 @@
 'use strict';
-const config = require('ocbesbn-config');
+const config = require('@opuscapita/config');
 const Logger = require('ocbesbn-logger'); // Logger
 const soap = require('soap');
 const log = new Logger({
@@ -15,9 +15,9 @@ module.exports = function (app, db, config) {
     );
     app.post('/api/insert',
         (req, res) => handleInsertByApi(req)
-            .then(result => res.send(result))
+            .then(result => res.status(200).json(result))
             .catch(error => {
-                res.json(error.toString());
+                res.status(400).json({message: error.message});
             })
     );
 };
@@ -33,7 +33,7 @@ const validateCustomRequest = function (request) {
     const mandatoryFields = ['shortdesc', 'longdesc', 'prio', 'customer', 'assignmentgroup'];
     const assignmentGroupMapping = require('./utility/groupMapping');
     const result = {};
-    let mandatory_errors = mandatoryFields.filter(
+    let missingMandatoryFields = mandatoryFields.filter(
         field => Object.keys(request).indexOf(field) === -1
             || !request[field]);
 
@@ -46,14 +46,14 @@ const validateCustomRequest = function (request) {
 
     // assignmentgroup
     if (!request['assignmentgroup'] || !assignmentGroupMapping[request['assignmentgroup']])
-        errors.push(`field assignmentgroup could not be mapped internally. \nPlease use one of those: ${JSON.stringify(assignmentGroupMapping)}`);
+        errors.push(`field assignmentgroup (value was '${request['assignmentgroup'] ? request['assignmentgroup'] : "-missing-"}') could not be mapped internally. \nPlease use one of those: ${JSON.stringify(assignmentGroupMapping)}`);
     else
         result['u_assignment_group'] = assignmentGroupMapping[request['assignmentgroup']];
 
     // mapping missing mandatory fields to error-messages
-    mandatory_errors = mandatory_errors.map(error => `field ${error} is mandatory`);
+    missingMandatoryFields = missingMandatoryFields.map(error => `field ${error} is mandatory`);
 
-    let totalErrors = mandatory_errors.concat(errors);
+    let totalErrors = missingMandatoryFields.concat(errors);
     if (totalErrors.length > 0)
         throw new Error(JSON.stringify(totalErrors));
 

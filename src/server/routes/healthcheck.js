@@ -1,5 +1,5 @@
 'use strict';
-const config = require('ocbesbn-config');
+const config = require('@opuscapita/config');
 const soap = require('soap');
 const fs = require('fs');
 const Logger = require('ocbesbn-logger'); // Logger
