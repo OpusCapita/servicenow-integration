@@ -4,7 +4,7 @@ const Logger = require('ocbesbn-logger'); // Logger
 const soap = require('soap');
 const log = new Logger({
     context: { 
-        serviceName: 'servicenow-integration' 
+        serviceName: 'servicenow-integration'  
     }
 });
 let cachedSoapCredentials;
