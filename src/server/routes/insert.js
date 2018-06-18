@@ -106,6 +106,7 @@ const doServiceNowInsert = function (client, request) {
     return new Promise((resolve, reject) => {
         if (!client)
             return reject('no client for request');
+        log.info("Going to send insert-request with body: ", request);
         client.insert(request, (error, response) => {
             if (error) {
                 log.error(error);
