@@ -106,7 +106,7 @@ const doServiceNowInsert = function (client, request) {
     return new Promise((resolve, reject) => {
         if (!client)
             return reject('no client for request');
-        log.info("Going to send insert-request with body: ", request);
+        logRequest(request);
         client.insert(request, (error, response) => {
             if (error) {
                 log.error(error);
@@ -136,3 +136,11 @@ const getSoapCredentials = function () {
         })
         .then(it => it);
 };
+
+function logRequest(request){
+    const shortenedObj = {};
+    for(const key of Object.keys(request)){
+        shortenedObj[key] = `${request[key]}`.substring(0, 20);
+    }
+    log.info("servicenow-request: ", shortenedObj);
+}
