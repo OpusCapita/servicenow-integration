@@ -1,4 +1,4 @@
-git clone https://github.com/OpusCapita/duriel.git -b st_dev ../buildprocess
+git clone https://github.com/OpusCapita/duriel.git -b feature/proddeployment ../buildprocess
 cd ../buildprocess
 npm install
 npm test
