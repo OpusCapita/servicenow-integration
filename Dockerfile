@@ -14,7 +14,7 @@ RUN apk add --no-cache curl
 
 USER node
 
-RUN node install && npm cache clean --force
+RUN npm install && npm cache clean --force
 
 EXPOSE 3016
 CMD [ "npm", "start" ]
