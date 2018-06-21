@@ -27,7 +27,7 @@ module.exports.doHealthCheck = function () {
         .then(healthChecks => analyseHealthChecks(healthChecks))        // grouping by status and summing
         .then(healthChecks => enrichWithDeploymentInfo(healthChecks))   // check for circle ci deployment
         .then(healthChecks => enrichWithSevInfo(healthChecks))          // use enriched healthChecks to determine sev-state
-        .then(healthChecks => filterBySev(healthChecks))                // filtering based on sev
+        .then(healthChecks => filterBySev(healthChecks))                 // filtering based on sev
         .catch(error => {
             log.error(error); // TODO: escalation?
             return [];
