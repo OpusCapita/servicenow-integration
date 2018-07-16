@@ -19,7 +19,7 @@
     "bluebird": "^3.5.0",
     "@opuscapita/config": "^3.0.1",
     "@opuscapita/db-init": "^2.0.8",
-    "@opuscapita/web-init": "^3.0.9",
+    "@opuscapita/web-init": "^3.0.54",
     "ocbesbn-logger": "^1.0.2",
     "ocbesbn-redis-events": "^1.0.4",
     "ocbesbn-bouncer": "^0.2.11",
