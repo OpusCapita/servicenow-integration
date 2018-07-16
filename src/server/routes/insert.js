@@ -82,11 +82,10 @@ module.exports.doInsert = function (request) {
 const sendServiceNowRequest = function (request) {
     return getSoapCredentials()
         .then(cred => createSoapClient(cred[0], cred[1], cred[2]))
-        .then(client => doServiceNowInsert(client, request));
+        .then(client => executeSoapRequest(client, request, 'insert'));
 };
 
 const createSoapClient = function (user, password, uri) {
-    //log.info(`user: ${user}, password: ${password}, uri: ${uri}`);
     let auth = "Basic " + new Buffer(`${user}:${password}`).toString("base64");
     log.info(`auth: ${auth}`);
     return new Promise((resolve, reject) => {
@@ -102,20 +101,20 @@ const createSoapClient = function (user, password, uri) {
     })
 };
 
-const doServiceNowInsert = function (client, request) {
+function executeSoapRequest(client, body, method){
     return new Promise((resolve, reject) => {
         if (!client)
             return reject('no client for request');
-        client.insert(request, (error, response) => {
+        logRequest(body);
+        client[method](body, (error, response) => {
             if (error) {
-                log.error(error);
                 return reject(error);
             } else {
                 return resolve(response);
             }
         });
     });
-};
+}
 
 const getSoapCredentials = function () {
     return config.getProperty(['servicenow-api-user', 'servicenow-api-password', 'servicenow-api-uri'])
@@ -135,3 +134,11 @@ const getSoapCredentials = function () {
         })
         .then(it => it);
 };
+
+function logRequest(request){
+    const shortenedObj = {};
+    for(const key of Object.keys(request)){
+        shortenedObj[key] = `${request[key]}`.substring(0, 20);
+    }
+    log.info("servicenow-request: ", shortenedObj);
+}
