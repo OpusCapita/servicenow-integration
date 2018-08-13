@@ -27,9 +27,12 @@
     },
     "oc-consul-injection": {
       "redis/password": "${SECRET_:env_REDIS}",
-      "servicenow-api-user" : "${SECRET_:env_SN_USER}",
-      "servicenow-api-password" : "${SECRET_:env_SN_PASSWORD}",
-      "servicenow-api-uri" : "${SECRET_:env_SN_URI}"
+      "servicenow-api-user": "${SECRET_:env_SN_USER}",
+      "servicenow-api-password": "${SECRET_:env_SN_PASSWORD}",
+      "servicenow-api-uri": "${SECRET_:env_SN_URI}"
+    },
+    "libraryDependencies": {
+      "@opuscapita/config": "0.0.0"
     }
   }
 }
