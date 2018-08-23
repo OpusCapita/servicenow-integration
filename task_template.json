@@ -32,7 +32,7 @@
       "servicenow-api-uri": "${SECRET_:env_SN_URI}"
     },
     "libraryDependencies": {
-      "@opuscapita/config": "0.0.0"
+      "@opuscapita/config": "0.0.0" 
     }
   }
 }
