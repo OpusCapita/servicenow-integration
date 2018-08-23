@@ -11,7 +11,7 @@ jobs:
       - run:
           name: "prepare buildprocess scripts"
           command: |
-              git clone https://github.com/OpusCapita/duriel.git -b master ../buildprocess
+              git clone https://github.com/OpusCapita/duriel.git -b develop ../buildprocess
               cd ../buildprocess
               npm install
               npm test
@@ -54,7 +54,7 @@ jobs:
       - run:
           name: "prepare buildprocess scripts"
           command: |
-             git clone https://github.com/OpusCapita/duriel.git -b master ../buildprocess
+             git clone https://github.com/OpusCapita/duriel.git -b develop ../buildprocess
              cd ../buildprocess
              npm install
              npm test
