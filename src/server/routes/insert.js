@@ -64,7 +64,7 @@ const validateCustomRequest = function (request) {
     result['u_error_type'] = "\\OCSEFTP01\prod\Kundin\ssrca";   // incident
 
     // TODO: fix it! Remove hardcoding and add params to API
-    result['u_service'] = "Business Network Portal";
+    result['u_service'] = "Business Network Portal Enhanced";
     result['u_bsc'] = "Businessnetwork Portal";
 
     // if(request['ciid']){
