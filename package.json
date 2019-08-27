@@ -19,7 +19,7 @@
     "bluebird": "^3.5.0",
     "@opuscapita/config": "^3.0.1",
     "@opuscapita/db-init": "^2.0.8",
-    "@opuscapita/web-init": "^3.0.54",
+    "@opuscapita/web-init": "^3.0.88",
     "ocbesbn-logger": "^1.0.2",
     "ocbesbn-redis-events": "^1.0.4",
     "ocbesbn-bouncer": "^0.2.11",
@@ -34,12 +34,10 @@
     "mocha-junit-reporter": "^1.12.1",
     "nodemon": "^1.11.0",
     "nyc": "^10.2.2",
-    "raml-to-markdown": "^1.1.4",
+    "raml-to-markdown": "1.1.11",
     "rimraf": "^2.6.0",
     "sequelize-to-markdown": "^1.1.13",
-    "webpack": "2.5.1",
-    "jsdoc-to-markdown": "^4.0.1",
-    "raml-to-markdown": "1.1.11"
+    "webpack": "2.5.1"
   },
   "scripts": {
     "start": "node src/server/index.js",
