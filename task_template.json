@@ -33,6 +33,7 @@
     },
     "libraryDependencies": {
       "@opuscapita/config": "0.0.0" 
-    }
+    },
+    "limit-memory": "800M"
   }
 }

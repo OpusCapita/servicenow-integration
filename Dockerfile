@@ -1,16 +1,15 @@
-FROM node:8-alpine
-MAINTAINER stefantuebben
+FROM node:8-stretch-slim
+MAINTAINER denic 
 
-# NOTE: "node" user and corresponding "/home/node" dir are created by "node:6-alpine" image.
+RUN apt-get update
+RUN apt-get install curl
 
 ENV NODE_PATH=/home/node/servicenow-integration/node_modules
 
 WORKDIR /home/node/servicenow-integration
 
-RUN chown -R node:node .
+RUN chown -R node:node /home/node 
 COPY --chown=node:node . .
-
-RUN apk add --no-cache curl
 
 USER node
 
