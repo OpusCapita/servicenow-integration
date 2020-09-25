@@ -2,7 +2,7 @@ FROM node:8-stretch-slim
 MAINTAINER denic 
 
 RUN apt-get update
-RUN apt-get install curl
+RUN apt-get install -y curl
 
 ENV NODE_PATH=/home/node/servicenow-integration/node_modules
 
