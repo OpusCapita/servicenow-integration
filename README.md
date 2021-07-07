@@ -1,3 +1,5 @@
+**DEPRECATED**
+
 # servicenow-integration
 
 ## healthcheck
